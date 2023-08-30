@@ -1,0 +1,8 @@
+.DS_Store
+
+__pycache__/
+*.pyc
+
+squid_outputs
+
+models/ResidualBind32/cell_line_13.h5
