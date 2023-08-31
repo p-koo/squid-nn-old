@@ -37,7 +37,12 @@ class ScalarPredictor(BasePredictor):
 
     def __call__(self, x):
         pred = prediction_in_batches(x, self.pred_fun, self.batch_size, **self.kwargs)
-        return pred[:,self.task_idx][:,np.newaxis]
+        #pred = self.pred_fun(x)
+
+        #print(pred)
+        #print(np.squeeze(pred[self.task_idx]))
+        #return pred[:,self.task_idx][:,np.newaxis]
+        return pred[self.task_idx][:, np.newaxis]
 
 
 
@@ -101,14 +106,21 @@ def prediction_in_batches(x, model_pred_fun, batch_size=None, **kwargs):
     num_batches = np.floor(N/batch_size).astype(int)
     pred = []
     for i in range(num_batches):
-        pred.append(model_pred_fun(x[i*batch_size:(i+1)*batch_size], **kwargs))
+        pred.append([np.array(model_pred_fun(x[i*batch_size:(i+1)*batch_size], **kwargs))])
+
+
+        #print('!',model_pred_fun(x[i*batch_size:(i+1)*batch_size]))
+        #print('!!',model_pred_fun(x[i*batch_size:(i+1)*batch_size]).shape)
     if num_batches*batch_size < N:
-        pred.append(model_pred_fun(x[num_batches*batch_size:], **kwargs))
+        pred.append([np.array(model_pred_fun(x[num_batches*batch_size:], **kwargs))])
+    
+    #return np.concatenate(pred, axis=0)
     return np.vstack(pred)
 
 
 
 def profile_pca(pred):
+
     N, L = pred.shape
     sum = np.sum(pred, axis=1)
 
@@ -123,16 +135,6 @@ def profile_pca(pred):
     if corr[0,1] < 0:
         U[:,0] *= -1
     return U[:,0][:-1]
-
-
-# if log2FC is True:
-#     pred_min = mave_custom['y'].min()
-#     mave_custom['y'] += (abs(pred_min) + 1)
-#     pred_scalar_wt += (abs(pred_min) + 1)
-#     pred_scalar_wt = np.log2(pred_scalar_wt)
-#     mave_custom['y'] = mave_custom['y'].apply(lambda x: np.log2(x))
-#     mave_custom['y'] = mave_custom['y'].fillna(0)
-#     mave_custom.replace([np.inf, -np.inf], 0, inplace=True)
 
 
 

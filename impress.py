@@ -8,6 +8,20 @@ import logomaker
 import utilities
 
 
+def plot_y_hist(mave_df, save, save_dir):
+
+    # plot histogram of transformed deepnet predictions
+    fig, ax = plt.subplots()
+    ax.hist(mave_df['y'], bins=100)
+    ax.set_xlabel('y')
+    ax.set_ylabel('Frequency')
+    ax.axvline(mave_df['y'][0], c='red', label='WT', linewidth=2, zorder=10) #wild-type prediction
+    plt.legend(loc='upper right')
+    plt.tight_layout()
+    if save is True:
+        plt.savefig(os.path.join(save_dir, 'mave_distribution.png'), facecolor='w', dpi=200)
+    plt.show()
+
 
 def plot_performance(model, info, save, save_dir):
     
@@ -23,7 +37,7 @@ def plot_performance(model, info, save, save_dir):
     ax.set_ylabel('bits')
     ax.set_title('Training history')
     ax.yaxis.set_major_locator(MaxNLocator(integer=True))
-    ax.legend(loc='lower right')
+    ax.legend(loc='best')
     plt.tight_layout()
     if save is True:
         plt.savefig(os.path.join(save_dir, 'mavenn_training.png'), facecolor='w', dpi=200)
@@ -39,8 +53,9 @@ def plot_additive_logo(logo, center=True, view_window=None, alphabet=['A','C','G
         logo_fig = logo
     else:
         logo_fig = logo[view_window[0]:view_window[1]]
+        logo_fig = utilities.arr2pd(logo_fig, alphabet)
 
-    logomaker.Logo(df=utilities.arr2pd(logo_fig, alphabet),
+    logomaker.Logo(df=logo_fig,
                     ax=ax,
                     fade_below=.5,
                     shade_below=.5,
@@ -48,8 +63,6 @@ def plot_additive_logo(logo, center=True, view_window=None, alphabet=['A','C','G
                     center_values=center,
                     font_name='Arial Rounded MT Bold')
     if view_window is not None:
-
-
         ax.set_xticks(np.arange(0, view_window[1]-view_window[0], 1))
         ax.set_xticklabels(np.arange(view_window[0], view_window[1], 1))
 

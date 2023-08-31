@@ -76,20 +76,23 @@ def apply_mut_by_seq_index(x_index, shape, num_muts):
     # loop through and generate random mutagenesis
     for i, num_mut in enumerate(num_muts):
 
-        # generate mutation index
-        mut_index = np.random.choice(range(0, L), num_mut, replace=False)
+        if i == 0: #keep wild-type sequence
+            one_hot[i,:,:] = np.eye(A)[x_index]
+        else:
+            # generate mutation index
+            mut_index = np.random.choice(range(0, L), num_mut, replace=False)
 
-        # sample alphabet
-        mut = np.random.choice(range(1, A), (len(mut_index)))
+            # sample alphabet
+            mut = np.random.choice(range(1, A), (len(mut_index)))
 
-        # loop through sequence and add mutation index (note: up to 3 is added which does not map to [0,3] alphabet)
-        seq_index = np.copy(x_index)
-        for j, m in zip(mut_index, mut):
-            seq_index[j] += m
+            # loop through sequence and add mutation index (note: up to 3 is added which does not map to [0,3] alphabet)
+            seq_index = np.copy(x_index)
+            for j, m in zip(mut_index, mut):
+                seq_index[j] += m
 
-        # wrap non-sensical indices back to alphabet -- effectively makes it random mutation
-        seq_index = np.mod(seq_index, A)
+            # wrap non-sensical indices back to alphabet -- effectively makes it random mutation
+            seq_index = np.mod(seq_index, A)
 
-        # create one-hot from index
-        one_hot[i,:,:] = np.eye(A)[seq_index]
+            # create one-hot from index
+            one_hot[i,:,:] = np.eye(A)[seq_index]
     return one_hot

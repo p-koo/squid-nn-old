@@ -144,8 +144,8 @@ class SurrogateMAVENN(SurrogateBase):
 
     
     def train(self, x, y, learning_rate=5e-4, epochs=500, batch_size=100,
-              early_stopping=True, patience=25, restore_best_weights=True, 
-              save=False, save_dir=None, verbose=1):
+              early_stopping=True, patience=25, restore_best_weights=True,
+              log2FC=False, save=False, save_dir=None, verbose=1):
 
         # convert matrix of one-hots into sequence dataframe
         if verbose:
@@ -155,8 +155,15 @@ class SurrogateMAVENN(SurrogateBase):
         if verbose:
             print(mave_df)
 
+        # convert y values using log2 of the fold change
+        if log2FC is True:
+            mave_df = data_log2FC(mave_df)
+
         if self.deduplicate:
-            mave_df.drop_duplicates(['y', 'x'], inplace=True)
+            mave_df.drop_duplicates(['y', 'x'], inplace=True, keep='first')
+
+        # ensure proper format
+        mave_df['y'] = mave_df['y'].apply(lambda x: np.asarray(x).astype('float32'))
  
         # split dataset for MAVE-NN
         mave_df['set'] = np.random.choice(a=['training','test','validation'],
@@ -294,12 +301,12 @@ class SurrogateMAVENN(SurrogateBase):
             full_length = self.L
         additive_logo = self.theta_dict['logomaker_df']
         additive_logo.fillna(0, inplace=True) #if necessary, set NaN parameters to zero
-        additive_logo_zeros = np.zeros(shape=(full_length, self.A))
-        additive_logo_zeros[mut_window[0]:mut_window[1], :] = additive_logo
-        additive_logo = additive_logo_zeros
+        if mut_window is not None:
+            additive_logo_zeros = np.zeros(shape=(full_length, self.A))
+            additive_logo_zeros[mut_window[0]:mut_window[1], :] = additive_logo
+            additive_logo = additive_logo_zeros
 
         return additive_logo
-
 
 
 def data_splits(N, test_split, valid_split, rnd_seed):
@@ -311,3 +318,13 @@ def data_splits(N, test_split, valid_split, rnd_seed):
     valid_index = shuffle[num_test:num_test+num_valid]
     train_index = shuffle[num_test+num_valid:]
     return train_index, valid_index, test_index
+
+
+def data_log2FC(mave_df):
+    pred_min = mave_df['y'].min()
+    mave_df['y'] += (abs(pred_min) + 1)
+    pred_wt = mave_df['y'][0]
+    log2_pred_wt = np.log2(pred_wt)
+    mave_df['y'] = mave_df['y'].apply(lambda x: np.log2(x))
+    mave_df['y'] -= log2_pred_wt
+    return mave_df

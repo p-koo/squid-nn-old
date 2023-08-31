@@ -32,7 +32,7 @@ class InSilicoMAVE():
 
 
     def generate(self, x, num_sim, seed=None, verbose=1):
-        """Randomly delete segments in a set of one-hot DNA sequences.
+        """Randomly mutate segments in a set of one-hot DNA sequences.
 
         Parameters
         ----------
@@ -46,7 +46,7 @@ class InSilicoMAVE():
         Returns
         -------
         torch.Tensor
-            Sequences with randomly deleted segments (padded to correct shape
+            Sequences with randomly mutated segments (padded to correct shape
             with random DNA)
         """
         np.random.seed(seed)
@@ -59,14 +59,18 @@ class InSilicoMAVE():
             print('  Generating mutagenized sequences...')
         if self.mut_window is not None:
             x_window = self.delimit_range(x, self.start_position, self.stop_position)
-        x_mut = self.mut_generator(x_window, num_sim)
+            x_mut = self.mut_generator(x_window, num_sim)
+        else:
+            x_mut = self.mut_generator(x, num_sim)
 
         # predict MAVE data and process
         if verbose:
             print('  Predicting mutagenized sequences...')
         if self.mut_window is not None:
             x_mut_full = self.pad_mave(x_mut, x, self.start_position, self.stop_position)
-        y_mut = self.mut_predictor(x_mut_full)
+            y_mut = self.mut_predictor(x_mut_full)
+        else:
+            y_mut = self.mut_predictor(x_mut)
 
         return x_mut, y_mut
 
