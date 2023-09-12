@@ -113,8 +113,12 @@ def prediction_in_batches(x, model_pred_fun, batch_size=None, **kwargs):
     if num_batches*batch_size < N:
         pred.append(model_pred_fun(x[num_batches*batch_size:], **kwargs))
 
-    #return np.vstack(pred)
-    return np.concatenate(pred, axis=1)
+    try:
+        preds = np.concatenate(pred, axis=1)
+    except ValueError as ve:
+        preds = np.vstack(pred)
+    return preds
+
 
 
 def profile_sum(pred, save_dir=None):

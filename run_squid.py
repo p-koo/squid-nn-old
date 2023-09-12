@@ -62,7 +62,7 @@ if 1:
                                                 )
     
     alphabet = ['A','C','G','T']
-    log2FC = True#False
+    log2FC = True
     output_skip = 0
     
 
@@ -110,7 +110,7 @@ elif 0:
                                                task_idx=task_idx, batch_size=512)
     
     alphabet = ['A','C','G','T']
-    log2FC = True#False
+    log2FC = True
     output_skip = 0
 
 else:
