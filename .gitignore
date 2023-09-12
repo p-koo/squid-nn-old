@@ -5,5 +5,5 @@ __pycache__/
 
 squid_outputs
 
-models/ResidualBind32/cell_line_13.h5
-models/DeepSTARR/deepstarr_data.h5
+example_models/ResidualBind32/cell_line_13.h5
+examplemodels/DeepSTARR/deepstarr_data.h5

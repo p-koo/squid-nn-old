@@ -5,10 +5,10 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
 import mavenn
 import logomaker
-import utilities
+import utils
 
 
-def plot_y_hist(mave_df, save, save_dir):
+def plot_y_hist(mave_df, save_dir):
 
     # plot histogram of transformed deepnet predictions
     fig, ax = plt.subplots()
@@ -18,12 +18,14 @@ def plot_y_hist(mave_df, save, save_dir):
     ax.axvline(mave_df['y'][0], c='red', label='WT', linewidth=2, zorder=10) #wild-type prediction
     plt.legend(loc='upper right')
     plt.tight_layout()
-    if save is True:
+    if save_dir is not None:
         plt.savefig(os.path.join(save_dir, 'mave_distribution.png'), facecolor='w', dpi=200)
-    plt.show()
+        plt.close()
+    else:
+        plt.show()
 
 
-def plot_performance(model, info, save, save_dir):
+def plot_performance(model, info, save_dir):
     
     # plot mavenn model performance
     fig, ax = plt.subplots(1, 1, figsize=[5, 5])
@@ -39,12 +41,14 @@ def plot_performance(model, info, save, save_dir):
     ax.yaxis.set_major_locator(MaxNLocator(integer=True))
     ax.legend(loc='best')
     plt.tight_layout()
-    if save is True:
+    if save_dir is not None:
         plt.savefig(os.path.join(save_dir, 'mavenn_training.png'), facecolor='w', dpi=200)
-    plt.show()
+        plt.close()
+    else:
+        plt.show()
 
 
-def plot_additive_logo(logo, center=True, view_window=None, alphabet=['A','C','G','T'], save=False, save_dir=None):
+def plot_additive_logo(logo, center=True, view_window=None, alphabet=['A','C','G','T'], save_dir=None):
 
     # plot additive logo
     fig, ax = plt.subplots(figsize=[10,3])
@@ -53,7 +57,7 @@ def plot_additive_logo(logo, center=True, view_window=None, alphabet=['A','C','G
         logo_fig = logo
     else:
         logo_fig = logo[view_window[0]:view_window[1]]
-        logo_fig = utilities.arr2pd(logo_fig, alphabet)
+        logo_fig = utils.arr2pd(logo_fig, alphabet)
 
     logomaker.Logo(df=logo_fig,
                     ax=ax,
@@ -69,12 +73,14 @@ def plot_additive_logo(logo, center=True, view_window=None, alphabet=['A','C','G
     ax.xaxis.set_major_locator(MaxNLocator(integer=True))
     ax.set_ylabel('Additive effect')
     plt.tight_layout()
-    if save is True:
+    if save_dir is not None:
         plt.savefig(os.path.join(save_dir, 'additive_logo.png'), facecolor='w', dpi=200)
-    plt.show()
+        plt.close()
+    else:
+        plt.show()
 
 
-def plot_pairwise_matrix(theta_lclc, view_window=None, alphabet=['A','C','G','T'], save=False, save_dir=None):
+def plot_pairwise_matrix(theta_lclc, view_window=None, alphabet=['A','C','G','T'], save_dir=None):
 
     # plot maveen pairwise matrix
     fig, ax = plt.subplots(figsize=[10,5])
@@ -98,12 +104,14 @@ def plot_pairwise_matrix(theta_lclc, view_window=None, alphabet=['A','C','G','T'
     cb.outline.set_visible(False)
     cb.ax.tick_params(direction='in', size=20, color='white')
     plt.tight_layout()
-    if save is True:
+    if save_dir is True:
         plt.savefig(os.path.join(save_dir, 'pairwise_matrix.png'), facecolor='w', dpi=200)
-    plt.show()
+        plt.close()
+    else:
+        plt.show()
 
 
-def plot_y_vs_yhat(model, mave_df, save=False, save_dir=None):
+def plot_y_vs_yhat(model, mave_df, save_dir=None):
 
     # plot mavenn y versus yhat
     fig, ax = plt.subplots(1,1,figsize=[5,5])
@@ -120,12 +128,14 @@ def plot_y_vs_yhat(model, mave_df, save=False, save_dir=None):
     ax.set_title(f'Standard metric of model performance:\n$R^2$={Rsq:.3}');
     ax.legend(loc='upper left')
     plt.tight_layout()
-    if save is True:
+    if save_dir is True:
         plt.savefig(os.path.join(save_dir,'mavenn_measure_yhat.png'), facecolor='w', dpi=200)
-    plt.show()
+        plt.close()
+    else:
+        plt.show()
     
     
-def plot_y_vs_phi(model, mave_df, save=False, save_dir=None):
+def plot_y_vs_phi(model, mave_df, save_dir=None):
 
     # plot mavenn y versus phi
     fig, ax = plt.subplots(1,1,figsize=[5,5])
@@ -150,6 +160,43 @@ def plot_y_vs_phi(model, mave_df, save=False, save_dir=None):
     ax.set_title('GE measurement process')
     ax.legend(loc='upper left')
     fig.tight_layout()
-    if save is True:
+    if save_dir is not None:
         plt.savefig(os.path.join(save_dir, 'mavenn_measure_phi.png'), facecolor='w', dpi=200)
-    plt.show()
+        plt.close()
+    else:
+        plt.show()
+
+
+def plot_eig_vals(vals, save_dir=None):
+
+    x = range(1,len(vals)+1)
+    plt.scatter(x, vals)
+    plt.title('Eigenvalue spectrum')
+    plt.xlabel(r'$PC$')
+    plt.ylabel(r'$\mathrm{\lambda}$', rotation=0)
+    plt.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
+    plt.xlim([0,15])
+    plt.ylim(-vals[0]/8., vals[0]+vals[0]/8.)
+    plt.locator_params(nbins=15)
+    plt.axhline(y=0, color='k', alpha=.5, linestyle='--', linewidth=1)
+    if save_dir is not None:
+        plt.savefig(os.path.join(save_dir, 'pca_eigvals.png'), facecolor='w', dpi=200)
+        plt.close()
+    else:
+        plt.show()
+
+
+def plot_eig_vecs(U, v1, v2, save_dir=None):
+
+    fig, ax = plt.subplots()
+    ax.scatter(U[:,v1], U[:,v2], s=1, facecolor='k', alpha=.5)
+    ax.scatter(U[:,v1][-1], U[:,v2][-1], s=5, facecolor='r', label='WT')
+    ax.set_xlabel(r'$PC_%s$' % (v1+1), fontsize=20)
+    ax.set_ylabel(r'$PC_%s$' % (v2+1), fontsize=20)
+    plt.legend(loc='best')
+    plt.tight_layout()
+    if save_dir is not None:
+        plt.savefig(os.path.join(save_dir, 'pca_eigvecs.png'), facecolor='w', dpi=200)
+        plt.close()
+    else:
+        plt.show()

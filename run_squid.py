@@ -15,14 +15,15 @@ py_dir = os.path.dirname(os.path.abspath(__file__))
 gpu = False
 save = True
 
+
 # =============================================================================
 # Setup for user-defined deep learning model (choose one)
 # =============================================================================
-if 0:
+if 1:
     # import ResidualBind-32 model and define hyperparameters
     model_name = 'ResidualBind32'
-    from models.ResidualBind32 import re32_utils
-    model, bin_size = re32_utils.read_model(os.path.join(py_dir,'models/%s/model' % model_name), compile_model=True)
+    from example_models.ResidualBind32 import re32_utils
+    model, bin_size = re32_utils.read_model(os.path.join(py_dir,'example_models/%s/model' % model_name), compile_model=True)
     """
         Inputs shape:   (n, 2048, 4)
         Outputs shape:  (1, 64, 15) : 64-bin-resolution profile for each of the 15 cell lines
@@ -32,9 +33,17 @@ if 0:
     seq_index = 834
     task_idx = 13 #cell line
 
+    # create save directory
+    if save is True:
+        save_dir = os.path.join(py_dir, 'squid_outputs/%s/%s' % (model_name, seq_index))
+        if not os.path.exists(save_dir):
+            os.makedirs(save_dir)
+    else:
+        save_dir = None
+
     # retrieve sequence-of-interest from test set
     import h5py
-    with h5py.File(os.path.join(py_dir, 'models/%s/cell_line_%s.h5' % (model_name, task_idx)), 'r') as dataset:
+    with h5py.File(os.path.join(py_dir, 'example_models/%s/cell_line_%s.h5' % (model_name, task_idx)), 'r') as dataset:
         x_all = np.array(dataset['X']).astype(np.float32)
 
     # define mutagenesis window for sequence
@@ -44,14 +53,16 @@ if 0:
     # set up predictor class for in silico MAVE
     pred_generator = predictor.ProfilePredictor(pred_fun=model.predict_on_batch, 
                                                 task_idx=task_idx, batch_size=512,
-                                                reduce_fun=np.sum)
+                                                #reduce_fun=predictor.profile_sum)
+                                                reduce_fun=predictor.profile_pca,
+                                                save_dir=save_dir)
     
     alphabet = ['A','C','G','T']
     log2FC = False
     output_skip = 0
     
 
-elif 1:
+elif 0:
     # import DeepSTARR model and define hyperparameters
     model_name = 'DeepSTARR'
     import kipoi
@@ -65,9 +76,17 @@ elif 1:
     seq_index = 24869
     task_idx = 0 #developmental (DEV) class
 
+    # create save directory
+    if save is True:
+        save_dir = os.path.join(py_dir, 'squid_outputs/%s/%s' % (model_name, seq_index))
+        if not os.path.exists(save_dir):
+            os.makedirs(save_dir)
+    else:
+        save_dir = None
+
     # retrieve genomic sequences from test set
     import h5py
-    with h5py.File(os.path.join(py_dir, 'models/%s/deepstarr_data.h5' % model_name), 'r') as dataset:
+    with h5py.File(os.path.join(py_dir, 'example_models/%s/deepstarr_data.h5' % model_name), 'r') as dataset:
         x_all = np.array(dataset['x_test']).astype(np.float32)
 
    # define mutagenesis window for sequence
@@ -94,11 +113,6 @@ x = x_all[seq_index]
 seq_length = x.shape[0]
 mut_window = [start_position, stop_position]
 
-# create save directory
-if save is True:
-    save_dir = os.path.join(py_dir, 'squid_outputs/%s/%s' % (model_name, seq_index))
-    if not os.path.exists(save_dir):
-        os.makedirs(save_dir)
 
 # set up mutagenizer class for in silico MAVE
 mut_generator = mutagenizer.RandomMutagenesis(mut_rate=0.1, uniform=False)
@@ -119,25 +133,25 @@ surrogate_model = surrogate_zoo.SurrogateMAVENN(x_mut.shape, num_tasks=y_mut.sha
 # train surrogate model
 surrogate, mave_df = surrogate_model.train(x_mut, y_mut, learning_rate=5e-4, epochs=500, batch_size=100,
                                            early_stopping=True, patience=25, restore_best_weights=True,
-                                           log2FC=log2FC, save=save, save_dir=save_dir, verbose=True)
+                                           log2FC=log2FC, save_dir=save_dir, verbose=True)
 
 # retrieve model parameters
-params = surrogate_model.get_params(gauge='empirical', save=True, save_dir=save_dir)
+params = surrogate_model.get_params(gauge='empirical', save_dir=save_dir)
 
 # generate sequence logo
 logo = surrogate_model.get_logo(mut_window=mut_window, full_length=seq_length)
 
 # retrieve model performance metrics
-info = surrogate_model.get_info(save=save, save_dir=save_dir, verbose=True)
+info = surrogate_model.get_info(save_dir=save_dir, verbose=True)
 
 # plot figures
-impress.plot_y_hist(mave_df, save=save, save_dir=save_dir)
-impress.plot_performance(surrogate, info=info, save=save, save_dir=save_dir) #plot model performance (bits)
-impress.plot_additive_logo(logo, center=True, view_window=mut_window, alphabet=alphabet, save=save, save_dir=save_dir)
+impress.plot_y_hist(mave_df, save_dir=save_dir)
+impress.plot_performance(surrogate, info=info, save_dir=save_dir) #plot model performance (bits)
+impress.plot_additive_logo(logo, center=True, view_window=mut_window, alphabet=alphabet, save_dir=save_dir)
 if gpmap == 'pairwise':
-    impress.plot_pairwise_matrix(params[2], view_window=mut_window, alphabet=alphabet, save=save, save_dir=save_dir)
-impress.plot_y_vs_yhat(surrogate, mave_df=mave_df, save=save, save_dir=save_dir)
-impress.plot_y_vs_phi(surrogate, mave_df=mave_df, save=save, save_dir=save_dir)
+    impress.plot_pairwise_matrix(params[2], view_window=mut_window, alphabet=alphabet, save_dir=save_dir)
+impress.plot_y_vs_yhat(surrogate, mave_df=mave_df, save_dir=save_dir)
+impress.plot_y_vs_phi(surrogate, mave_df=mave_df, save_dir=save_dir)
 
 
 

@@ -145,7 +145,7 @@ class SurrogateMAVENN(SurrogateBase):
     
     def train(self, x, y, learning_rate=5e-4, epochs=500, batch_size=100,
               early_stopping=True, patience=25, restore_best_weights=True,
-              log2FC=False, save=False, save_dir=None, verbose=1):
+              log2FC=False, save_dir=None, verbose=1):
 
         # convert matrix of one-hots into sequence dataframe
         if verbose:
@@ -171,7 +171,7 @@ class SurrogateMAVENN(SurrogateBase):
                                         size=len(mave_df))
         new_cols = ['set'] + list(mave_df.columns[0:-2]) + ['x']
         mave_df = mave_df[new_cols]
-        if save is True:
+        if save_dir is not None:
             mave_df.to_csv(os.path.join(save_dir, 'mave_df.csv'),  index=False) #.csv.gz', compression='gzip')
 
         trainval_df, self.test_df = mavenn.split_dataset(mave_df)
@@ -234,14 +234,14 @@ class SurrogateMAVENN(SurrogateBase):
                 #restore_best_weights=self.restore_best_weights,
                 verbose=False)
         
-        if save is True:
+        if save_dir is not None:
             self.model.save(os.path.join(save_dir, 'mavenn_model_%s' % self.gpmap))
 
         return (self.model, mave_df)
 
 
 
-    def get_info(self, save=False, save_dir=None, verbose=1):
+    def get_info(self, save_dir=None, verbose=1):
 
         # compute predictive information on test data
         if self.regression_type == 'MPA':
@@ -257,7 +257,7 @@ class SurrogateMAVENN(SurrogateBase):
             print('  max val_I_var:', np.amax(self.model.history['val_I_var']))
             print('')
 
-        if save is True:
+        if save_dir is not None:
             # save information content to text file
             if os.path.exists(os.path.join(save_dir, 'model_info.txt')):
                 os.remove(os.path.join(save_dir,'model_info.txt'))
@@ -271,7 +271,7 @@ class SurrogateMAVENN(SurrogateBase):
         return I_pred
 
 
-    def get_params(self, gauge='empirical', save=False, save_dir=None):
+    def get_params(self, gauge='empirical', save_dir=None):
 
         # fix gauge mode for model representation
         self.theta_dict = self.model.get_theta(gauge=gauge) #for usage: theta_dict.keys()
@@ -279,14 +279,14 @@ class SurrogateMAVENN(SurrogateBase):
         theta_0 = self.theta_dict['theta_0']
         theta_lc = self.theta_dict['theta_lc']
         theta_lc[np.isnan(theta_lc)] = 0
-        if save is True:
+        if save_dir is not None:
             np.save(os.path.join(save_dir, 'theta_0.npy'), theta_0)
             np.save(os.path.join(save_dir, 'theta_lc.npy'), theta_lc)
 
         if self.gpmap == 'pairwise':
             theta_lclc = self.theta_dict['theta_lclc']
             theta_lclc[np.isnan(theta_lclc)] = 0
-            if save is True:
+            if save_dir is not None:
                 np.save(os.path.join(save_dir, 'theta_lclc.npy'), theta_lclc)
         else:
             theta_lclc = None
