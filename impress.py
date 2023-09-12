@@ -1,3 +1,7 @@
+"""
+Functions for plotting intermediate and final data
+"""
+
 import os, sys
 sys.dont_write_bytecode = True
 import numpy as np
@@ -104,7 +108,7 @@ def plot_pairwise_matrix(theta_lclc, view_window=None, alphabet=['A','C','G','T'
     cb.outline.set_visible(False)
     cb.ax.tick_params(direction='in', size=20, color='white')
     plt.tight_layout()
-    if save_dir is True:
+    if save_dir is not None:
         plt.savefig(os.path.join(save_dir, 'pairwise_matrix.png'), facecolor='w', dpi=200)
         plt.close()
     else:
@@ -128,7 +132,7 @@ def plot_y_vs_yhat(model, mave_df, save_dir=None):
     ax.set_title(f'Standard metric of model performance:\n$R^2$={Rsq:.3}');
     ax.legend(loc='upper left')
     plt.tight_layout()
-    if save_dir is True:
+    if save_dir is not None:
         plt.savefig(os.path.join(save_dir,'mavenn_measure_yhat.png'), facecolor='w', dpi=200)
         plt.close()
     else:
@@ -190,7 +194,7 @@ def plot_eig_vecs(U, v1, v2, save_dir=None):
 
     fig, ax = plt.subplots()
     ax.scatter(U[:,v1], U[:,v2], s=1, facecolor='k', alpha=.5)
-    ax.scatter(U[:,v1][-1], U[:,v2][-1], s=5, facecolor='r', label='WT')
+    ax.scatter(U[:,v1][0], U[:,v2][0], s=5, facecolor='r', label='WT') #first index is wild-type
     ax.set_xlabel(r'$PC_%s$' % (v1+1), fontsize=20)
     ax.set_ylabel(r'$PC_%s$' % (v2+1), fontsize=20)
     plt.legend(loc='best')

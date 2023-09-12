@@ -1,3 +1,7 @@
+"""
+Main pipeline demonstrating how to use SQUID with example models
+"""
+
 import os, sys
 sys.dont_write_bytecode = True
 import numpy as np
@@ -51,22 +55,30 @@ if 1:
     stop_position = 1042+7+10
 
     # set up predictor class for in silico MAVE
-    pred_generator = predictor.ProfilePredictor(pred_fun=model.predict_on_batch, 
-                                                task_idx=task_idx, batch_size=512,
-                                                #reduce_fun=predictor.profile_sum)
+    pred_generator = predictor.ProfilePredictor(pred_fun=model.predict_on_batch, task_idx=task_idx,
+                                                batch_size=512, save_dir=save_dir,
+                                                #reduce_fun=predictor.profile_sum,
                                                 reduce_fun=predictor.profile_pca,
-                                                save_dir=save_dir)
+                                                )
     
     alphabet = ['A','C','G','T']
-    log2FC = False
+    log2FC = True#False
     output_skip = 0
     
 
 elif 0:
     # import DeepSTARR model and define hyperparameters
     model_name = 'DeepSTARR'
-    import kipoi
-    model = kipoi.get_model('DeepSTARR')
+
+    def load_model(model):
+        from keras.models import model_from_json
+        keras_model_weights = model + '.h5'
+        keras_model_json = model + '.json'
+        keras_model = model_from_json(open(keras_model_json).read())
+        keras_model.load_weights(keras_model_weights)
+        return keras_model, keras_model_weights, keras_model_json
+
+    model, model_weights, model_json = load_model(os.path.join(py_dir,'example_models/%s/model_tensorflow_1_14_0/deepstarr.model' % model_name))
     """
     Inputs shape:   (n, 249, 4)
     Outputs shape:  (2,)
@@ -98,7 +110,7 @@ elif 0:
                                                task_idx=task_idx, batch_size=512)
     
     alphabet = ['A','C','G','T']
-    log2FC = False
+    log2FC = True#False
     output_skip = 0
 
 else:
@@ -119,21 +131,25 @@ mut_generator = mutagenizer.RandomMutagenesis(mut_rate=0.1, uniform=False)
 
 # generate in silico MAVE
 mave = mave.InSilicoMAVE(mut_generator, pred_generator, seq_length, mut_window=mut_window)
-x_mut, y_mut = mave.generate(x, num_sim=1000, seed=None)
+x_mut, y_mut = mave.generate(x, num_sim=10000, seed=None)
 
 # set up surrogate model
 gpmap = 'additive' #options: {'additive', 'pairwise' if MAVE-NN}
-surrogate_model = surrogate_zoo.SurrogateMAVENN(x_mut.shape, num_tasks=y_mut.shape[1],
-                                                gpmap=gpmap, regression_type='GE',
-                                                linearity='nonlinear', noise='SkewedT',
-                                                noise_order=2, reg_strength=0.1,
-                                                alphabet=alphabet,
-                                                deduplicate=True, gpu=gpu)
+if 1:
+    surrogate_model = surrogate_zoo.SurrogateMAVENN(x_mut.shape, num_tasks=y_mut.shape[1],
+                                                    gpmap=gpmap, regression_type='GE',
+                                                    linearity='nonlinear', noise='SkewedT',
+                                                    noise_order=2, reg_strength=0.1,
+                                                    log2FC=log2FC, alphabet=alphabet,
+                                                    deduplicate=True, gpu=gpu)
+else: #ZULU
+    surrogate_model = surrogate_zoo.SurrogateLinear(x_mut.shape, num_tasks=y_mut.shape[1],
+                                                    log2FC=log2FC, alphabet=alphabet, gpu=gpu)
 
 # train surrogate model
 surrogate, mave_df = surrogate_model.train(x_mut, y_mut, learning_rate=5e-4, epochs=500, batch_size=100,
                                            early_stopping=True, patience=25, restore_best_weights=True,
-                                           log2FC=log2FC, save_dir=save_dir, verbose=True)
+                                           save_dir=save_dir, verbose=1)
 
 # retrieve model parameters
 params = surrogate_model.get_params(gauge='empirical', save_dir=save_dir)
@@ -141,17 +157,18 @@ params = surrogate_model.get_params(gauge='empirical', save_dir=save_dir)
 # generate sequence logo
 logo = surrogate_model.get_logo(mut_window=mut_window, full_length=seq_length)
 
-# retrieve model performance metrics
-info = surrogate_model.get_info(save_dir=save_dir, verbose=True)
+if mave_df is not None: #below set up for MAVENN models only
+    # retrieve model performance metrics
+    info = surrogate_model.get_info(save_dir=save_dir, verbose=True)
 
-# plot figures
-impress.plot_y_hist(mave_df, save_dir=save_dir)
-impress.plot_performance(surrogate, info=info, save_dir=save_dir) #plot model performance (bits)
-impress.plot_additive_logo(logo, center=True, view_window=mut_window, alphabet=alphabet, save_dir=save_dir)
-if gpmap == 'pairwise':
-    impress.plot_pairwise_matrix(params[2], view_window=mut_window, alphabet=alphabet, save_dir=save_dir)
-impress.plot_y_vs_yhat(surrogate, mave_df=mave_df, save_dir=save_dir)
-impress.plot_y_vs_phi(surrogate, mave_df=mave_df, save_dir=save_dir)
+    # plot figures
+    impress.plot_y_hist(mave_df, save_dir=save_dir)
+    impress.plot_performance(surrogate, info=info, save_dir=save_dir) #plot model performance (bits)
+    impress.plot_additive_logo(logo, center=True, view_window=mut_window, alphabet=alphabet, save_dir=save_dir)
+    if gpmap == 'pairwise':
+        impress.plot_pairwise_matrix(params[2], view_window=mut_window, alphabet=alphabet, save_dir=save_dir)
+    impress.plot_y_vs_yhat(surrogate, mave_df=mave_df, save_dir=save_dir)
+    impress.plot_y_vs_phi(surrogate, mave_df=mave_df, save_dir=save_dir)
 
 
 

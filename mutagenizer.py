@@ -1,3 +1,7 @@
+"""
+Library of functions to perform in silico mutagenesis
+"""
+
 import os, sys
 sys.dont_write_bytecode = True
 import numpy as np

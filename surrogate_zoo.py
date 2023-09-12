@@ -1,3 +1,7 @@
+"""
+Library of surrogate models and related functions
+"""
+
 import os, sys
 sys.dont_write_bytecode = True
 import numpy as np
@@ -25,10 +29,13 @@ class SurrogateBase():
 
 
 class SurrogateLinear(SurrogateBase):
-    def __init__(self, input_shape, num_tasks, l1=1e-8, l2=1e-4):
+    def __init__(self, input_shape, num_tasks, l1=1e-8, l2=1e-4,
+                 log2FC=False, alphabet=['A','C','G','T'], gpu=False):
 
         self.model = self.build(input_shape, num_tasks, l1, l2)
-
+        self.log2FC = log2FC
+        self.alphabet = alphabet
+        self.gpu = gpu
 
     def build(self, input_shape, num_tasks, l1, l2):
 
@@ -45,20 +52,20 @@ class SurrogateLinear(SurrogateBase):
         return keras.Model(inputs=inputs, outputs=outputs)
 
 
-    def train(self, x, y, learning_rate=1e-3, epochs=500, batch_size=100,
-              early_stopping=True, patience=25, restore_best_weights=True, rnd_seed=None):
+    def train(self, x, y, learning_rate=1e-3, epochs=500, batch_size=100, early_stopping=True,
+              patience=25, restore_best_weights=True, rnd_seed=None, save_dir=None, verbose=1):
 
         # generate data splits
-        train_index, valid_index, test_index = data_splits(N, test_split=0.1, valid_split=0.1, rnd_seed=rnd_seed)
+        train_index, valid_index, test_index = data_splits(x.shape[0], test_split=0.1, valid_split=0.1, rnd_seed=rnd_seed)
         x_train = x[train_index]
-        y_train = y_mut[train_index]
+        y_train = y[train_index]
         x_valid = x[valid_index]
-        y_valid = y_mut[valid_index]
+        y_valid = y[valid_index]
         x_test = x[test_index]
         y_test = y[test_index]
 
         # set up optimizer and metrics
-        model.compile(tf.keras.optimizers.Adam(learning_rate), loss='mse')
+        self.model.compile(tf.keras.optimizers.Adam(learning_rate), loss='mse')
 
         # early stopping callback
         es_callback = keras.callbacks.EarlyStopping(monitor='val_loss',
@@ -66,32 +73,63 @@ class SurrogateLinear(SurrogateBase):
                                                     verbose=1,
                                                     mode='min',
                                                     restore_best_weights=restore_best_weights)
+
         # reduce learning rate callback
         reduce_lr = keras.callbacks.ReduceLROnPlateau(monitor='val_loss',
                                                         factor=0.2,
                                                         patience=3,
                                                         min_lr=1e-7,
                                                         mode='min',
-                                                        verbose=1)
+                                                        verbose=verbose)
 
+        print('!!', x_train.shape)
+        print('!!!', y_train.shape)
         # fit model to data
-        history = model.fit(x_train, y_train,
+        history = self.model.fit(x_train, y_train,
                             epochs=epochs,
                             batch_size=batch_size,
                             shuffle=True,
                             validation_data=(x_valid, y_valid),
                             callbacks=[es_callback, reduce_lr],
-                            verbose=False)
+                            verbose=verbose)
+        
+        if save_dir is not None:
+            self.model.save(os.path.join(save_dir, 'linear_model'))
 
-    def get_params(self):
-        return self.model.layers[1].get_weights()
+        return (self.model, None)
+
+
+    def get_params(self, gauge=None, save_dir=None):
+        for layer in self.model.layers:
+            weights = layer.get_weights()
+            print(weights)
+
+        return self.model.layers[1].get_weights()[0]
+    
+
+    def get_logo(self, full_length=None, mut_window=None):
+
+        # insert the (potentially-delimited) additive logo back into the max-length sequence
+        if full_length is None:
+            full_length = self.L
+        #additive_logo = self.theta_dict['logomaker_df']
+        additive_logo = self.get_params(self.model)
+        print('!!!!', additive_logo)
+        print(additive_logo)
+        additive_logo.fillna(0, inplace=True) #if necessary, set NaN parameters to zero
+        if mut_window is not None:
+            additive_logo_zeros = np.zeros(shape=(full_length, self.A))
+            additive_logo_zeros[mut_window[0]:mut_window[1], :] = additive_logo
+            additive_logo = additive_logo_zeros
+
+        return additive_logo
 
 
 
 class SurrogateMAVENN(SurrogateBase):
     def __init__(self, input_shape, num_tasks, gpmap='additive', regression_type='GE',
                  linearity='nonlinear', noise='SkewedT', noise_order=2, reg_strength=0.1,
-                 alphabet=['A','C','G','T'], deduplicate=True, gpu=False):
+                 log2FC=False, alphabet=['A','C','G','T'], deduplicate=True, gpu=False):
         
         self.N, self.L, self.A = input_shape
         self.num_tasks = num_tasks
@@ -104,6 +142,7 @@ class SurrogateMAVENN(SurrogateBase):
         elif self.linearity == 'nonlinear':
             self.noise_order = noise_order
         self.reg_strength = reg_strength
+        self.log2FC = log2FC
         self.alphabet = alphabet
         self.deduplicate = deduplicate
         self.gpu = gpu
@@ -145,7 +184,7 @@ class SurrogateMAVENN(SurrogateBase):
     
     def train(self, x, y, learning_rate=5e-4, epochs=500, batch_size=100,
               early_stopping=True, patience=25, restore_best_weights=True,
-              log2FC=False, save_dir=None, verbose=1):
+              save_dir=None, verbose=1):
 
         # convert matrix of one-hots into sequence dataframe
         if verbose:
@@ -156,7 +195,7 @@ class SurrogateMAVENN(SurrogateBase):
             print(mave_df)
 
         # convert y values using log2 of the fold change
-        if log2FC is True:
+        if self.log2FC is True:
             mave_df = data_log2FC(mave_df)
 
         if self.deduplicate:
@@ -310,6 +349,7 @@ class SurrogateMAVENN(SurrogateBase):
 
 
 def data_splits(N, test_split, valid_split, rnd_seed):
+
     train_split = 1 - test_split - valid_split
     shuffle = np.random.permutation(range(N))
     num_valid = int(valid_split*N)
@@ -321,6 +361,7 @@ def data_splits(N, test_split, valid_split, rnd_seed):
 
 
 def data_log2FC(mave_df):
+
     pred_min = mave_df['y'].min()
     mave_df['y'] += (abs(pred_min) + 1)
     pred_wt = mave_df['y'][0]

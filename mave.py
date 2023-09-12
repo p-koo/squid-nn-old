@@ -1,11 +1,14 @@
+"""
+Functions for performing in silico MAVE
+"""
+
 import os, sys
 sys.dont_write_bytecode = True
 import numpy as np
 
 
-
 class InSilicoMAVE():
-    """Explain
+    """Module for performing in silico MAVE.
 
     Parameters
     ----------

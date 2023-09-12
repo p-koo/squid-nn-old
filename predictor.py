@@ -1,3 +1,7 @@
+"""
+Library of functions for DNN inference on mutagenized sequences
+"""
+
 import os, sys
 sys.dont_write_bytecode = True
 import numpy as np
@@ -5,6 +9,7 @@ import impress
 
 
 class BasePredictor():
+
     def __init__(self, pred_fun, reduce_fun, task_idx, batch_size):
         self.pred_fun = pred_fun
         self.reduce_fun = reduce_fun
@@ -38,7 +43,9 @@ class ScalarPredictor(BasePredictor):
 
     def __call__(self, x):
         pred = prediction_in_batches(x, self.pred_fun, self.batch_size, **self.kwargs)
-        return pred[:,self.task_idx][:,np.newaxis]
+        print(pred)
+        #return pred[:,self.task_idx][:,np.newaxis]
+        return pred[self.task_idx]
 
 
 
@@ -58,7 +65,7 @@ class ProfilePredictor(BasePredictor):
         pred = prediction_in_batches(x, self.pred_fun, self.batch_size, **self.kwargs)
 
         # reduce profile to scalar across axis for a given task_idx
-        pred = self.reduce_fun(pred[:,:,self.task_idx])#, axis=self.axis)
+        pred = self.reduce_fun(pred[:,:,self.task_idx], save_dir=self.save_dir)
         return pred[:,np.newaxis]
 
 
@@ -105,32 +112,33 @@ def prediction_in_batches(x, model_pred_fun, batch_size=None, **kwargs):
         pred.append(model_pred_fun(x[i*batch_size:(i+1)*batch_size], **kwargs))
     if num_batches*batch_size < N:
         pred.append(model_pred_fun(x[num_batches*batch_size:], **kwargs))
-    return np.vstack(pred)
+
+    #return np.vstack(pred)
+    return np.concatenate(pred, axis=1)
 
 
-def profile_sum(pred, axis=1):
+def profile_sum(pred, save_dir=None):
 
-    sum = np.sum(pred, axis=axis)
+    sum = np.sum(pred, axis=1)
     return sum
 
 
-def profile_pca(pred):
+def profile_pca(pred, save_dir=None):
 
     N, B = pred.shape #B : number of bins in profile
-    sum = np.sum(pred, axis=1)
-
     Y = pred.copy()
+    sum = np.sum(pred, axis=1) #needed for sense correction
 
     # normalization: mean of all distributions is subtracted from each distribution
     mean_all = np.mean(Y, axis=0)
     for i in range(N):
         Y[i,:] -= mean_all
 
-    print('  Computing SVD...')
+    print('    Computing SVD...')
     u,s,v = np.linalg.svd(Y.T, full_matrices=False)
     vals = s**2 #eigenvalues
     vecs = u #eigenvectors
-    print('  SVD complete')
+    print('    SVD complete')
     
     U = Y.dot(vecs)
     v1, v2 = 0, 1
@@ -138,11 +146,11 @@ def profile_pca(pred):
     corr = np.corrcoef(sum, U[:,v1])
     if corr[0,1] < 0: #correct for eigenvector "sense"
         U[:,v1] = -1.*U[:,v1]
-        print('  Corrected eigenvector sense')
+        print('    Corrected eigenvector sense')
 
 
-    impress.plot_eig_vals(vals, save_dir=ProfilePredictor.save_dir)
-    impress.plot_eig_vecs(U, v1=v1, v2=v2, save_dir=ProfilePredictor.save_dir)
+    impress.plot_eig_vals(vals, save_dir=save_dir)
+    impress.plot_eig_vecs(U, v1=v1, v2=v2, save_dir=save_dir)
 
     return U[:,v1]
 
