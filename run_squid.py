@@ -78,7 +78,7 @@ elif 0:
         keras_model.load_weights(keras_model_weights)
         return keras_model, keras_model_weights, keras_model_json
 
-    model, model_weights, model_json = load_model(os.path.join(py_dir,'example_models/%s/model_tensorflow_1_14_0/deepstarr.model' % model_name))
+    model, model_weights, model_json = load_model(os.path.join(py_dir,'example_models/%s/deepstarr.model' % model_name))
     """
     Inputs shape:   (n, 249, 4)
     Outputs shape:  (2,)
