@@ -30,10 +30,9 @@ class SurrogateBase():
 
 class SurrogateLinear(SurrogateBase):
     def __init__(self, input_shape, num_tasks, l1=1e-8, l2=1e-4,
-                 log2FC=False, alphabet=['A','C','G','T'], gpu=False):
+                 alphabet=['A','C','G','T'], gpu=False):
 
         self.model = self.build(input_shape, num_tasks, l1, l2)
-        self.log2FC = log2FC
         self.alphabet = alphabet
         self.gpu = gpu
 
@@ -129,7 +128,7 @@ class SurrogateLinear(SurrogateBase):
 class SurrogateMAVENN(SurrogateBase):
     def __init__(self, input_shape, num_tasks, gpmap='additive', regression_type='GE',
                  linearity='nonlinear', noise='SkewedT', noise_order=2, reg_strength=0.1,
-                 log2FC=False, alphabet=['A','C','G','T'], deduplicate=True, gpu=False):
+                 alphabet=['A','C','G','T'], deduplicate=True, gpu=False):
         
         self.N, self.L, self.A = input_shape
         self.num_tasks = num_tasks
@@ -142,7 +141,6 @@ class SurrogateMAVENN(SurrogateBase):
         elif self.linearity == 'nonlinear':
             self.noise_order = noise_order
         self.reg_strength = reg_strength
-        self.log2FC = log2FC
         self.alphabet = alphabet
         self.deduplicate = deduplicate
         self.gpu = gpu
@@ -193,10 +191,6 @@ class SurrogateMAVENN(SurrogateBase):
         mave_df = self.dataframe(x, y, alphabet=self.alphabet, gpu=self.gpu)
         if verbose:
             print(mave_df)
-
-        # convert y values using log2 of the fold change
-        if self.log2FC is True:
-            mave_df = data_log2FC(mave_df)
 
         if self.deduplicate:
             mave_df.drop_duplicates(['y', 'x'], inplace=True, keep='first')
@@ -358,14 +352,3 @@ def data_splits(N, test_split, valid_split, rnd_seed):
     valid_index = shuffle[num_test:num_test+num_valid]
     train_index = shuffle[num_test+num_valid:]
     return train_index, valid_index, test_index
-
-
-def data_log2FC(mave_df):
-
-    pred_min = mave_df['y'].min()
-    mave_df['y'] += (abs(pred_min) + 1)
-    pred_wt = mave_df['y'][0]
-    log2_pred_wt = np.log2(pred_wt)
-    mave_df['y'] = mave_df['y'].apply(lambda x: np.log2(x))
-    mave_df['y'] -= log2_pred_wt
-    return mave_df

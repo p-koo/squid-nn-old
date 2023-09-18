@@ -130,7 +130,7 @@ mut_window = [start_position, stop_position]
 mut_generator = mutagenizer.RandomMutagenesis(mut_rate=0.1, uniform=False)
 
 # generate in silico MAVE
-mave = mave.InSilicoMAVE(mut_generator, pred_generator, seq_length, mut_window=mut_window)
+mave = mave.InSilicoMAVE(mut_generator, pred_generator, seq_length, mut_window=mut_window, log2FC=log2FC)
 x_mut, y_mut = mave.generate(x, num_sim=10000, seed=None)
 
 # set up surrogate model
@@ -140,11 +140,10 @@ if 1:
                                                     gpmap=gpmap, regression_type='GE',
                                                     linearity='nonlinear', noise='SkewedT',
                                                     noise_order=2, reg_strength=0.1,
-                                                    log2FC=log2FC, alphabet=alphabet,
-                                                    deduplicate=True, gpu=gpu)
+                                                    alphabet=alphabet, deduplicate=True, gpu=gpu)
 else: #ZULU
     surrogate_model = surrogate_zoo.SurrogateLinear(x_mut.shape, num_tasks=y_mut.shape[1],
-                                                    log2FC=log2FC, alphabet=alphabet, gpu=gpu)
+                                                    alphabet=alphabet, gpu=gpu)
 
 # train surrogate model
 surrogate, mave_df = surrogate_model.train(x_mut, y_mut, learning_rate=5e-4, epochs=500, batch_size=100,

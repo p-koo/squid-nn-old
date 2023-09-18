@@ -21,11 +21,12 @@ class InSilicoMAVE():
     uniform : bool
         uniform (True), Poisson (false); sets the number of mutations per sequence
     """
-    def __init__(self, mut_generator, mut_predictor, seq_length, mut_window=None):
+    def __init__(self, mut_generator, mut_predictor, seq_length, mut_window=None, log2FC=False):
         self.mut_generator = mut_generator
         self.mut_predictor = mut_predictor
         self.seq_length = seq_length
         self.mut_window = mut_window
+        self.log2FC = log2FC
         if mut_window is not None:
             self.start_position = mut_window[0]
             self.stop_position = mut_window[1]
@@ -75,6 +76,9 @@ class InSilicoMAVE():
         else:
             y_mut = self.mut_predictor(x_mut)
 
+        if self.log2FC is True:
+            y_mut = self.apply_log2FC(y_mut)
+
         return x_mut, y_mut
 
 
@@ -88,3 +92,17 @@ class InSilicoMAVE():
 
     def delimit_range(self, x, start_position, stop_position):
         return x[start_position:stop_position,:]
+    
+
+    def apply_log2FC(self, y):
+
+        if np.amin(y) < 0:
+            y += (abs(np.amin(y)) + 1)
+        elif 0 <= np.amin(y) < 1:
+            y += 1
+
+        y_log2_wt = np.log2(y[0])
+        y_log2_all = np.log2(y)
+        y_log2_fc = y_log2_wt - y_log2_all
+
+        return y_log2_fc

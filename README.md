@@ -8,10 +8,17 @@
 <br/><br/>
 
 ## SQUID Repository
-
 This repository contains the software implementation for our [paper](https://www.google.com) **Title** (Seitz, Kinney* and Koo*). It contains tools to apply the discussed method **SQUID** (**S**urrogate **Qu**antitative **I**nterpretability for **D**eepnets) on genomic models. This work was developed in the Kinney and Koo research groups at Cold Spring Harbor Laboratory.
 
-## Instructions:
+## Installation:
+Currently, SQUID is available to download from PyPI.
+'pip install squid'
+
+Alternatively, the required packages can be installed via Anaconda
+'conda create -n squid python=3'
+'pip install mavenn'
+'pip install mavenn --upgrade'
+
 
 ### Usage:
 The `run_squid.py` script contains code for running SQUID on several example deep-learning models.
