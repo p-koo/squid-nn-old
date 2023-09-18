@@ -12,9 +12,11 @@ This repository contains the software implementation for our [paper](https://www
 
 ## Installation:
 Currently, SQUID is available to download from PyPI.
+
 `pip install squid`
 
 Alternatively, the required packages can be installed via Anaconda.
+
 `conda create -n squid python=3`
 `pip install mavenn`
 `pip install mavenn --upgrade`
