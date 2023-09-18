@@ -16,7 +16,7 @@ This repository contains the software implementation for our [paper](https://www
 pip install squid
 ```
 
-Dependencies:
+## Dependencies:
 
 ```bash
 conda create -n squid python=3
@@ -39,7 +39,7 @@ import squid
 
 The `run_squid.py` script contains code for running SQUID on several example deep-learning models.
 
-## Examples on Google Colab:
+### Examples on Google Colab:
 
 - DeepSTARR analysis: https://
 
