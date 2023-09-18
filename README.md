@@ -18,7 +18,9 @@ Currently, SQUID is available to download from PyPI.
 Alternatively, the required packages can be installed via Anaconda.
 
 `conda create -n squid python=3`
+
 `pip install mavenn`
+
 `pip install mavenn --upgrade`
 
 
