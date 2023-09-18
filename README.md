@@ -27,7 +27,7 @@ pip install mavenn --upgrade
 
 
 ### Usage:
-SQUID provides a simple interface that takes as input deep learning models. For any deep learning model that takes in sequence as input, perform SQUID as follows:
+SQUID provides a simple interface that takes as input deep-learning models. For any deep-learning model that takes in sequence as input, perform SQUID as follows:
 
 ```python
 import squid
