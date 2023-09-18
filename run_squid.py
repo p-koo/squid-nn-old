@@ -57,12 +57,12 @@ if 1:
     # set up predictor class for in silico MAVE
     pred_generator = predictor.ProfilePredictor(pred_fun=model.predict_on_batch, task_idx=task_idx,
                                                 batch_size=512, save_dir=save_dir,
-                                                #reduce_fun=predictor.profile_sum,
-                                                reduce_fun=predictor.profile_pca,
+                                                reduce_fun=predictor.profile_sum,
+                                                #reduce_fun=predictor.profile_pca,
                                                 )
     
     alphabet = ['A','C','G','T']
-    log2FC = True
+    log2FC = False
     output_skip = 0
     
 
@@ -110,7 +110,7 @@ elif 0:
                                                task_idx=task_idx, batch_size=512)
     
     alphabet = ['A','C','G','T']
-    log2FC = True
+    log2FC = False
     output_skip = 0
 
 else:
@@ -131,7 +131,7 @@ mut_generator = mutagenizer.RandomMutagenesis(mut_rate=0.1, uniform=False)
 
 # generate in silico MAVE
 mave = mave.InSilicoMAVE(mut_generator, pred_generator, seq_length, mut_window=mut_window, log2FC=log2FC)
-x_mut, y_mut = mave.generate(x, num_sim=10000, seed=None)
+x_mut, y_mut = mave.generate(x, num_sim=100, seed=None)
 
 # set up surrogate model
 gpmap = 'additive' #options: {'additive', 'pairwise' if MAVE-NN}
@@ -141,7 +141,7 @@ if 1:
                                                     linearity='nonlinear', noise='SkewedT',
                                                     noise_order=2, reg_strength=0.1,
                                                     alphabet=alphabet, deduplicate=True, gpu=gpu)
-else: #ZULU
+else:
     surrogate_model = surrogate_zoo.SurrogateLinear(x_mut.shape, num_tasks=y_mut.shape[1],
                                                     alphabet=alphabet, gpu=gpu)
 
@@ -168,7 +168,6 @@ if mave_df is not None: #below set up for MAVENN models only
         impress.plot_pairwise_matrix(params[2], view_window=mut_window, alphabet=alphabet, save_dir=save_dir)
     impress.plot_y_vs_yhat(surrogate, mave_df=mave_df, save_dir=save_dir)
     impress.plot_y_vs_phi(surrogate, mave_df=mave_df, save_dir=save_dir)
-
 
 
 

@@ -7,6 +7,8 @@ sys.dont_write_bytecode = True
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
+import warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
 import mavenn
 import logomaker
 import utils
