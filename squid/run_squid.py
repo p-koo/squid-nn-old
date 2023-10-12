@@ -131,7 +131,7 @@ mut_generator = mutagenizer.RandomMutagenesis(mut_rate=0.1, uniform=False)
 
 # generate in silico MAVE
 mave = mave.InSilicoMAVE(mut_generator, pred_generator, seq_length, mut_window=mut_window, log2FC=log2FC)
-x_mut, y_mut = mave.generate(x, num_sim=100, seed=None)
+x_mut, y_mut = mave.generate(x, num_sim=10000, seed=None)
 
 # set up surrogate model
 gpmap = 'additive' #options: {'additive', 'pairwise' if MAVE-NN}
