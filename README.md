@@ -40,7 +40,8 @@ SQUID provides a simple interface that takes as input a deep-learning model that
 
 - Examples in Python: 
 
-	- `run_squid.py` contains code for running SQUID on several example deep-learning models.
+	- The script `run_squid.py` contains code for running SQUID on several example deep-learning models
+	- The SQUID manuscript repository contains other examples for surrogate modeling on several other DNNs, and includes additional options for scalability: https://github.com/evanseitz/squid_manuscript
 
 - Examples in Google Colab:
 
