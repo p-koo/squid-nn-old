@@ -17,13 +17,13 @@ For questions, email: koo@cshl.edu
 <img src="images/schematic.png" alt="fig" width="1000"/>
 
 
-## Install:
+### Install:
 
 ```bash
 pip install squid
 ```
 
-## Dependencies:
+### Dependencies:
 
 ```bash
 conda create -n squid python=3
@@ -50,10 +50,10 @@ The `run_squid.py` script contains code for running SQUID on several example dee
 
 - DeepSTARR analysis: https://
 
-- ResidualBind-32 analysis: https://
+- ResidualBind-32 analysis: https://colab.research.google.com/drive/1eKC78YE2l49mQFOlnA9Xr1Y9IO121Va5?usp=sharing
 
 
-## Citation:
+### Citation:
 If this code is useful in your work, please our paper.
 
 ```bibtex
