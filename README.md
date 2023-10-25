@@ -14,7 +14,7 @@ SQUID is a TensorFlow package to interpret sequence-based deep learning models f
 
 For questions, email: koo@cshl.edu
 
-<img src="images/schematic.png" alt="fig"# width="500"/>
+<img src="images/schematic.png" alt="fig" width="1000"/>
 
 
 ## Install:
