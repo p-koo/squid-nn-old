@@ -38,13 +38,15 @@ Note: For older DNNs that require inference via Tensorflow 1, Python < 3 is requ
 ### Usage:
 SQUID provides a simple interface that takes as input a deep-learning model that takes in sequence as input.
 
-- Examples in Python: The `run_squid.py` script contains code for running SQUID on several example deep-learning models.
+- Examples in Python: 
+
+	- `run_squid.py` contains code for running SQUID on several example deep-learning models.
 
 - Examples in Google Colab:
 
--- Additive analysis with DeepSTARR: https://colab.research.google.com/drive/12HR8Vu_8ji3Ac1wli4wgqx1J0YB73JF_?usp=sharing
+	- Additive analysis with DeepSTARR: https://colab.research.google.com/drive/12HR8Vu_8ji3Ac1wli4wgqx1J0YB73JF_?usp=sharing
 
--- Pairwise analysis with ResidualBind-32: https://colab.research.google.com/drive/1eKC78YE2l49mQFOlnA9Xr1Y9IO121Va5?usp=sharing
+	- Pairwise analysis with ResidualBind-32: https://colab.research.google.com/drive/1eKC78YE2l49mQFOlnA9Xr1Y9IO121Va5?usp=sharing
 
 
 ### Citation:
