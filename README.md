@@ -11,8 +11,6 @@ SQUID: interpreting sequence-based deep learning models for regulatory genomics
 
 <br/><br/>
 
-This repository contains the software implementation for our [paper](https://www.google.com) **Identifying *cis*-regulatory mechanisms from genomic deep neural networks using surrogate models** (Seitz, McCandlish, Kinney and Koo). It contains tools to apply the discussed method **SQUID** (**S**urrogate **Qu**antitative **I**nterpretability for **D**eepnets) on genomic models.
-
 SQUID is a TensorFlow package to interpret sequence-based deep learning models for regulatory genomics data with domain-specific surrogate models. For installation instructions, tutorials, and documentation, please refer to the SQUID website, https://squid-nn.readthedocs.io/. For an extended discussion of this approach and its applications, please refer to our manuscript:
 
 * Seitz E., McCandlish D., Kinney J. and Koo P. Identifying *cis*-regulatory mechanisms from genomic deep neural networks using surrogate models.
