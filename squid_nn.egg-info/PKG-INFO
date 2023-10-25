@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: squid-nn
-Version: 0.1.0
+Version: 0.1.1
 Summary: SQUID is a TensorFlow package to interpret sequence-based deep learning models for regulatory genomics data with domain-specific surrogate models.
 Author: Evan Seitz
 Author-email: evan.e.seitz@gmail.com
