@@ -42,7 +42,6 @@ SQUID provides a simple interface that takes as input a sequence-based deep-lear
 
 <img src="images/framework.png" alt="fig" width="1000"/>
 
-
 - Examples in Python: 
 
 	- The script `run_squid.py` contains code for running SQUID on several example deep-learning models
