@@ -5,7 +5,7 @@ Library of functions for DNN inference on mutagenized sequences
 import os, sys
 sys.dont_write_bytecode = True
 import numpy as np
-import impress
+#import impress
 
 
 class BasePredictor():
@@ -152,9 +152,8 @@ def profile_pca(pred, save_dir=None):
         U[:,v1] = -1.*U[:,v1]
         print('    Corrected eigenvector sense')
 
-
-    impress.plot_eig_vals(vals, save_dir=save_dir)
-    impress.plot_eig_vecs(U, v1=v1, v2=v2, save_dir=save_dir)
+    #impress.plot_eig_vals(vals, save_dir=save_dir)
+    #impress.plot_eig_vecs(U, v1=v1, v2=v2, save_dir=save_dir)
 
     return U[:,v1]
 
