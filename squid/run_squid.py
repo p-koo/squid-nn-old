@@ -171,7 +171,7 @@ if mave_df is not None: #below set up for MAVENN models only
 
 
 
-# Parameters to include above:
+# Parameters to include above (see 'squid_manuscript' repository):
 '''
 output_skip = 0 #ENFORMER
 pred_trans_delimit = None #ENFORMER
