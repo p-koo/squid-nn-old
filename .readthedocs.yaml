@@ -24,7 +24,6 @@ formats: all
 
 # Optionally set the version of Python and requirements required to build your docs
 python:
-  version: 3.7
   install:
     - requirements: readthedocs_requirements.txt
   system_packages: true
