@@ -1,4 +1,8 @@
-# README
+SQUID: interpreting sequence-based deep learning models for regulatory genomics
+========================================================================
+%[![PyPI version](https://badge.fury.io/py/mavenn.svg)](https://badge.fury.io/py/mavenn)
+%[![Downloads](https://static.pepy.tech/personalized-badge/mavenn?period=total&units=international_system&left_color=black&right_color=blue&left_text=Downloads)](https://pepy.tech/project/mavenn)
+%[![Documentation Status](https://readthedocs.org/projects/mavenn/badge/?version=latest)](https://mavenn.readthedocs.io/en/latest/?badge=latest)
 
 <br/><br/>
 
@@ -6,13 +10,6 @@
 ![logo_light](./images/logo_light.png#gh-light-mode-only)
 
 <br/><br/>
-
-SQUID: interpreting sequence-based deep learning models for regulatory genomics
-========================================================================
-
-%[![PyPI version](https://badge.fury.io/py/mavenn.svg)](https://badge.fury.io/py/mavenn)
-%[![Downloads](https://static.pepy.tech/personalized-badge/mavenn?period=total&units=international_system&left_color=black&right_color=blue&left_text=Downloads)](https://pepy.tech/project/mavenn)
-%[![Documentation Status](https://readthedocs.org/projects/mavenn/badge/?version=latest)](https://mavenn.readthedocs.io/en/latest/?badge=latest)
 
 This repository contains the software implementation for our [paper](https://www.google.com) **Identifying *cis*-regulatory mechanisms from genomic deep neural networks using surrogate models** (Seitz, McCandlish, Kinney and Koo). It contains tools to apply the discussed method **SQUID** (**S**urrogate **Qu**antitative **I**nterpretability for **D**eepnets) on genomic models.
 
