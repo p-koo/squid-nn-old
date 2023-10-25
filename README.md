@@ -8,7 +8,7 @@
 <br/><br/>
 
 ## SQUID Repository
-This repository contains the software implementation for our [paper](https://www.google.com) **Title** (Seitz, McCandlish, Kinney and Koo). It contains tools to apply the discussed method **SQUID** (**S**urrogate **Qu**antitative **I**nterpretability for **D**eepnets) on genomic models.
+This repository contains the software implementation for our [paper](https://www.google.com) **Identifying *cis*-regulatory mechanisms from genomic deep neural networks using surrogate models** (Seitz, McCandlish, Kinney and Koo). It contains tools to apply the discussed method **SQUID** (**S**urrogate **Qu**antitative **I**nterpretability for **D**eepnets) on genomic models.
 
 SQUID is a TensorFlow package to interpret sequence-based deep learning models for regulatory genomics data with domain-specific surrogate models.
 
@@ -57,7 +57,7 @@ If this code is useful in your work, please our paper.
 
 ```bibtex
 @article{seitz2023squid,
-  title={TBD},
+  title={Identifying *cis*-regulatory mechanisms from genomic deep neural networks using surrogate models},
   author={Seitz, Evan and McCandlish, David and Kinney, Justin and Koo, Peter},
   journal={TBD},
   volume={TBD},
