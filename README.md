@@ -32,7 +32,9 @@ pip install mavenn
 pip install mavenn --upgrade
 ```
 
-Note: For older DNNs that require inference via Tensorflow 1, Python < 3 is required which is currently unsupported by MAVE-NN. Users will need to create separate environments in this case: (1) the first using TF1/Python2 for generating in silico MAVE data; and (2) the second using TF2/Python3 for training MAVE-NN surrogate models.
+Note: For older DNNs that require inference via Tensorflow 1, Python < 3 is required which is currently unsupported by MAVE-NN. Users will need to create separate environments in this case:
+1. An environment with Tensorflow 1 and Python 2 for generating *in silico* MAVE data
+2. An environment with Tensorflow 2 and Python 3 for training MAVE-NN surrogate models
 
 
 ### Usage:
