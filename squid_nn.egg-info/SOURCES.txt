@@ -9,7 +9,7 @@ squid/predictor.py
 squid/run_squid.py
 squid/surrogate_zoo.py
 squid/utils.py
-squid.egg-info/PKG-INFO
-squid.egg-info/SOURCES.txt
-squid.egg-info/dependency_links.txt
-squid.egg-info/top_level.txt
+squid_nn.egg-info/PKG-INFO
+squid_nn.egg-info/SOURCES.txt
+squid_nn.egg-info/dependency_links.txt
+squid_nn.egg-info/top_level.txt

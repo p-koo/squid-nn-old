@@ -20,37 +20,31 @@ For questions, email: koo@cshl.edu
 ### Install:
 
 ```bash
-pip install squid
+pip install squid-nn
 ```
 
 ### Dependencies:
 
 ```bash
 conda create -n squid python=3
+pip install logomaker
 pip install mavenn
 pip install mavenn --upgrade
-pip install pyyaml
 ```
 
-Note: for older versions of Tensorflow, ... #to be done
+Note: For older DNNs that require inference via Tensorflow 1, Python < 3 is required which is currently unsupported by MAVE-NN. Users will need to create separate environments in this case: one using TF1/Python2 for generating in silico MAVE data; and another using TF2/Python3 for training MAVE-NN surrogate models.
 
 
 ### Usage:
-SQUID provides a simple interface that takes as input a deep-learning model. For any deep-learning model that takes in sequence as input, perform SQUID as follows:
+SQUID provides a simple interface that takes as input a deep-learning model that takes in sequence as input.
 
-```python
-import squid
+- Examples in Python: The `run_squid.py` script contains code for running SQUID on several example deep-learning models.
 
-#to be done
-```
+- Examples in Google Colab:
 
-The `run_squid.py` script contains code for running SQUID on several example deep-learning models.
+-- Additive analysis with DeepSTARR: https://colab.research.google.com/drive/12HR8Vu_8ji3Ac1wli4wgqx1J0YB73JF_?usp=sharing
 
-### Examples on Google Colab:
-
-- Additive analysis with DeepSTARR: https://colab.research.google.com/drive/12HR8Vu_8ji3Ac1wli4wgqx1J0YB73JF_?usp=sharing
-
-- Pairwise analysis with ResidualBind-32: https://colab.research.google.com/drive/1eKC78YE2l49mQFOlnA9Xr1Y9IO121Va5?usp=sharing
+-- Pairwise analysis with ResidualBind-32: https://colab.research.google.com/drive/1eKC78YE2l49mQFOlnA9Xr1Y9IO121Va5?usp=sharing
 
 
 ### Citation:
