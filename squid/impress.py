@@ -11,7 +11,7 @@ import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 import mavenn
 import logomaker
-import utils
+from . import utils
 
 
 def plot_y_hist(mave_df, save_dir):
