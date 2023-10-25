@@ -14,14 +14,14 @@ import logomaker
 from . import utils
 
 
-def plot_y_hist(mave_df, save_dir):
+def plot_y_hist(y_mut, save_dir):
 
     # plot histogram of transformed deepnet predictions
     fig, ax = plt.subplots()
-    ax.hist(mave_df['y'], bins=100)
+    ax.hist(y_mut, bins=100)
     ax.set_xlabel('y')
     ax.set_ylabel('Frequency')
-    ax.axvline(mave_df['y'][0], c='red', label='WT', linewidth=2, zorder=10) #wild-type prediction
+    ax.axvline(y_mut[0], c='red', label='WT', linewidth=2, zorder=10) #wild-type prediction
     plt.legend(loc='upper right')
     plt.tight_layout()
     if save_dir is not None:

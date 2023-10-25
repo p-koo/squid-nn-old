@@ -161,7 +161,7 @@ if mave_df is not None: #below set up for MAVENN models only
     info = surrogate_model.get_info(save_dir=save_dir, verbose=True)
 
     # plot figures
-    impress.plot_y_hist(mave_df, save_dir=save_dir)
+    impress.plot_y_hist(y_mut, save_dir=save_dir)
     impress.plot_performance(surrogate, info=info, save_dir=save_dir) #plot model performance (bits)
     impress.plot_additive_logo(logo, center=True, view_window=mut_window, alphabet=alphabet, save_dir=save_dir)
     if gpmap == 'pairwise':
