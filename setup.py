@@ -1,11 +1,17 @@
 from setuptools import setup, find_packages
 
-
 setup(
     name="squid",
     version="0.1.0",
+    author="Evan Seitz",
+    author_email="evan.e.seitz@gmail.com",
     packages=find_packages(),
-    description = "Code to perform surrogate modeling analysis of deep learning models trained on genomics datasets.",
+    description = "SQUID is a TensorFlow package to interpret sequence-based deep learning models for regulatory genomics data with domain-specific surrogate models.",
+    classifiers=[
+        'Programming Language :: Python :: 3',
+        'License :: OSI Approved :: MIT License',
+        'Operating System :: OS Independent',
+    ],
     python_requires=">=3.7",
     install_requires=[],
 )
