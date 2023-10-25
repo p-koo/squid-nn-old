@@ -43,7 +43,6 @@ class ScalarPredictor(BasePredictor):
 
     def __call__(self, x):
         pred = prediction_in_batches(x, self.pred_fun, self.batch_size, **self.kwargs)
-        print(pred)
         #return pred[:,self.task_idx][:,np.newaxis]
         return pred[self.task_idx]
 
@@ -92,7 +91,6 @@ class BPNetPredictor(BasePredictor):
         # reduce bpnet profile prediction to scalar across axis for a given task_idx
         pred = pred[self.task_idx][0][:,self.strand]
         pred = self.reduce_fun(pred, axis=self.axis)
-        print(pred.shape)
         return pred[:,np.newaxis]
 
 
@@ -138,11 +136,9 @@ def profile_pca(pred, save_dir=None):
     for i in range(N):
         Y[i,:] -= mean_all
 
-    print('    Computing SVD...')
     u,s,v = np.linalg.svd(Y.T, full_matrices=False)
     vals = s**2 #eigenvalues
     vecs = u #eigenvectors
-    print('    SVD complete')
     
     U = Y.dot(vecs)
     v1, v2 = 0, 1
@@ -150,7 +146,6 @@ def profile_pca(pred, save_dir=None):
     corr = np.corrcoef(sum, U[:,v1])
     if corr[0,1] < 0: #correct for eigenvector "sense"
         U[:,v1] = -1.*U[:,v1]
-        print('    Corrected eigenvector sense')
 
     #impress.plot_eig_vals(vals, save_dir=save_dir)
     #impress.plot_eig_vecs(U, v1=v1, v2=v2, save_dir=save_dir)
