@@ -29,7 +29,7 @@ Note: for older versions of Tensorflow, ... #to be done
 
 
 ### Usage:
-SQUID provides a simple interface that takes as input deep-learning models. For any deep-learning model that takes in sequence as input, perform SQUID as follows:
+SQUID provides a simple interface that takes as input a deep-learning model. For any deep-learning model that takes in sequence as input, perform SQUID as follows:
 
 ```python
 import squid
@@ -46,8 +46,21 @@ The `run_squid.py` script contains code for running SQUID on several example dee
 - ResidualBind-32 analysis: https://
 
 
-## Attribution:
-If this code is useful in your work, please cite:
+## Citation:
+If this code is useful in your work, please our paper.
+
+```bibtex
+@article{seitz2023squid,
+  title={TBD},
+  author={Seitz, Evan and McCandlish, David and Kinney, Justin and Koo, Peter},
+  journal={TBD},
+  volume={TBD},
+  number={TBD},
+  pages={TBD},
+  year={2023},
+  publisher={TBD}
+}
+```
 
 ### License:
 Copyright (C) 2022–2023 Evan Seitz, Peter Koo, Justin Kinney
