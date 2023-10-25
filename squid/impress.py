@@ -54,10 +54,13 @@ def plot_performance(model, info, save_dir):
         plt.show()
 
 
-def plot_additive_logo(logo, center=True, view_window=None, alphabet=['A','C','G','T'], save_dir=None):
+def plot_additive_logo(logo, center=True, view_window=None, alphabet=['A','C','G','T'], fig_size=None, save_dir=None):
 
     # plot additive logo
-    fig, ax = plt.subplots(figsize=[10,3])
+    if fig_size is not None:
+        fig, ax = plt.subplots(figsize=fig_size)
+    else:
+        fig, ax = plt.subplots(figsize=[10,3])
 
     if view_window is None:
         logo_fig = logo
@@ -78,6 +81,7 @@ def plot_additive_logo(logo, center=True, view_window=None, alphabet=['A','C','G
 
     ax.xaxis.set_major_locator(MaxNLocator(integer=True))
     ax.set_ylabel('Additive effect')
+    ax.set_xlabel('Nucleotide position')
     plt.tight_layout()
     if save_dir is not None:
         plt.savefig(os.path.join(save_dir, 'additive_logo.png'), facecolor='w', dpi=200)
@@ -109,6 +113,7 @@ def plot_pairwise_matrix(theta_lclc, view_window=None, alphabet=['A','C','G','T'
                   labelpad=8, ha='center', va='center', rotation=-90)
     cb.outline.set_visible(False)
     cb.ax.tick_params(direction='in', size=20, color='white')
+    ax.set_xlabel('Nucleotide position')
     plt.tight_layout()
     if save_dir is not None:
         plt.savefig(os.path.join(save_dir, 'pairwise_matrix.png'), facecolor='w', dpi=200)
