@@ -4,11 +4,12 @@ SQUID: interpreting sequence-based deep learning models for regulatory genomics
 <!--- [![Downloads](https://static.pepy.tech/personalized-badge/mavenn?period=total&units=international_system&left_color=black&right_color=blue&left_text=Downloads)](https://pepy.tech/project/mavenn) --->
 <!--- [![Documentation Status](https://readthedocs.org/projects/mavenn/badge/?version=latest)](https://mavenn.readthedocs.io/en/latest/?badge=latest) --->
 
-<br/><br/>
+<br/>
 
 ![logo_dark](./images/logo_dark.png#gh-dark-mode-only)
 ![logo_light](./images/logo_light.png#gh-light-mode-only)
 
+<br/>
 
 **SQUID** (**S**urrogate **Qu**antitative **I**nterpretability for **D**eepnets) is a TensorFlow package to interpret sequence-based deep learning models for regulatory genomics data with domain-specific surrogate models. For installation instructions, tutorials, and documentation, please refer to the SQUID website, https://squid-nn.readthedocs.io/. For an extended discussion of this approach and its applications, please refer to our manuscript:
 
