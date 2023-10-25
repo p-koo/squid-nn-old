@@ -16,8 +16,6 @@ SQUID: interpreting sequence-based deep learning models for regulatory genomics
 * Seitz E., McCandlish D., Kinney J. and Koo P. Identifying *cis*-regulatory mechanisms from genomic deep neural networks using surrogate models.
 <!--- <em>Genome Biol</em> **23**, 98 (2022). https://doi.org/10.1186/s13059-022-02661-7 --->
 ---
-<img src="images/framework.png" alt="fig" width="1000"/>
-
 
 ### Install:
 
@@ -40,7 +38,10 @@ Note: For older DNNs that require inference via Tensorflow 1, Python < 3 is requ
 
 
 ### Usage:
-SQUID provides a simple interface that takes as input a deep-learning model that takes in sequence as input.
+SQUID provides a simple interface that takes as input a sequence-based deep-learning model (e.g., a DNN), which is used as an oracle to generate an *in silico* MAVE dataset representing a localized region of sequence space. The MAVE dataset can then be fit using a domain-specific surrogate model, with the resulting parameters visualized to reveal the biological mechanisms driving model performance.
+
+<img src="images/framework.png" alt="fig" width="1000"/>
+
 
 - Examples in Python: 
 
