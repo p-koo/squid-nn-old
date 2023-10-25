@@ -26,7 +26,6 @@ pip install squid-nn
 ### Dependencies:
 
 ```bash
-conda create -n squid python=3
 pip install logomaker
 pip install mavenn
 pip install mavenn --upgrade
