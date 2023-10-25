@@ -48,9 +48,9 @@ The `run_squid.py` script contains code for running SQUID on several example dee
 
 ### Examples on Google Colab:
 
-- DeepSTARR analysis: https://
+- Additive analysis with DeepSTARR: https://colab.research.google.com/drive/12HR8Vu_8ji3Ac1wli4wgqx1J0YB73JF_?usp=sharing
 
-- ResidualBind-32 analysis: https://colab.research.google.com/drive/1eKC78YE2l49mQFOlnA9Xr1Y9IO121Va5?usp=sharing
+- Pairwise analysis with ResidualBind-32: https://colab.research.google.com/drive/1eKC78YE2l49mQFOlnA9Xr1Y9IO121Va5?usp=sharing
 
 
 ### Citation:

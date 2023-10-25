@@ -34,7 +34,7 @@ if 1:
     """
 
     # define sequence-of-interest and output head (task)
-    seq_index = 834
+    seq_index = 641
     task_idx = 13 #cell line
 
     # create save directory
@@ -51,8 +51,8 @@ if 1:
         x_all = np.array(dataset['X']).astype(np.float32)
 
     # define mutagenesis window for sequence
-    start_position = 1042-10 #e.g., the nucleotide at position 1042 is the start of a pronounced AP1 motif (TGANTCA) in cell line 13
-    stop_position = 1042+7+10
+    start_position = 962-10 #e.g., the nucleotide at position 962 is the start of a pronounced AP1 motif (TGANTCA) in cell line 13
+    stop_position = 962+7+10
 
     # set up predictor class for in silico MAVE
     pred_generator = predictor.ProfilePredictor(pred_fun=model.predict_on_batch, task_idx=task_idx,
