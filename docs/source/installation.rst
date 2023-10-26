@@ -7,7 +7,7 @@ To install SQUID, use the ``pip`` package manager via the command line: ::
 
     $ pip install squid-nn
 
-MAVE-based surrogate models and visualization tools used in our analysis require additional dependencies: ::
+MAVE-based surrogate models and related visualization tools require additional dependencies: ::
 
     $ pip install logomaker 
     $ pip install mavenn
@@ -17,7 +17,7 @@ Please note that the latest version of MAVE-NN conflicts with NumPy's version (1
 due to a conflicting dependency with TensorFlow. This is the reason
 some users may have to run a pip upgrade command (shown above) 
 after installation on their command line. 
-Please see `MAVENN <https://mavenn.readthedocs.io>`_ for more information.
+Please see the `MAVENN <https://mavenn.readthedocs.io>`_ documentation for more information.
 
 Alternatively, you can clone SQUID from
 `GitHub <https://github.com/evanseitz/squid-nn>`_ 
