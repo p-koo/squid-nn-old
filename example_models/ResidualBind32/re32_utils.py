@@ -30,7 +30,7 @@ def read_model(run_path, compile_model=False):
         trained_model = tf.keras.models.load_model(run_path, custom_objects={"GELU": GELU})
         bin_size = ''
     else:
-	import yaml
+        import yaml
         config = get_config(run_path)  # load wandb config
         if 'bin_size' in config.keys():
             bin_size = config['bin_size']['value']  # get bin size
