@@ -12,11 +12,29 @@ and ResidualBind-32) to model a genomic locus using additive and pairwise effect
 respectively. 
 
 
-Models
-------
+*in silico* MAVE
+----------------
+The ``squid.mave`` class orchestrates generation of an *in silico*
+MAVE dataset. First, ``squid.mutagenizer`` is called to apply random
+mutagenesis on an input sequence-of-interest to create an ensemble
+of ``num_sim`` mutagenized sequences. Next, ``squid.predictor`` is called
+to run inference for each sequence in the ensemble, altogether forming
+a MAVE dataset containing ``num_sim`` sequence–function pairs.
+
+Mutagenesis
+-----------
 
 The ``squid.mutagenizer`` class contains functions to generate an *in silico*
-dataset by randomly mutated an input sequence-of-interest.
+dataset by randomly mutating an input sequence-of-interest.
 
 .. autoclass:: squid.mutagenizer
     :members: apply_mut_by_seq_index
+
+
+Inference
+---------
+
+The ``squid.predictor`` class...
+
+
+
