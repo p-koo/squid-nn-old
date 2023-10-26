@@ -81,8 +81,6 @@ class SurrogateLinear(SurrogateBase):
                                                         mode='min',
                                                         verbose=verbose)
 
-        print('!!', x_train.shape)
-        print('!!!', y_train.shape)
         # fit model to data
         history = self.model.fit(x_train, y_train,
                             epochs=epochs,
@@ -101,7 +99,6 @@ class SurrogateLinear(SurrogateBase):
     def get_params(self, gauge=None, save_dir=None):
         for layer in self.model.layers:
             weights = layer.get_weights()
-            print(weights)
 
         return self.model.layers[1].get_weights()[0]
     
@@ -113,8 +110,6 @@ class SurrogateLinear(SurrogateBase):
             full_length = self.L
         #additive_logo = self.theta_dict['logomaker_df']
         additive_logo = self.get_params(self.model)
-        print('!!!!', additive_logo)
-        print(additive_logo)
         additive_logo.fillna(0, inplace=True) #if necessary, set NaN parameters to zero
         if mut_window is not None:
             additive_logo_zeros = np.zeros(shape=(full_length, self.A))
