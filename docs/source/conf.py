@@ -63,7 +63,7 @@ html_theme_options = {
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['images']
 
-html_logo = 'images/logo_light.png'
+html_logo = 'logo_light.png'
 
 # to customize CSS
 # def setup(app):
