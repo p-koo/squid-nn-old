@@ -1,7 +1,7 @@
 import os, sys
 sys.dont_write_bytecode = True
 import tensorflow as tf
-import yaml
+#import yaml
 pyDir = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.join(pyDir))
 import losses
