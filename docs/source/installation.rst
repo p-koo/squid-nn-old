@@ -43,5 +43,5 @@ Please see the `MAVENN <https://mavenn.readthedocs.io>`_ documentation for more 
 For older DNNs that require inference via Tensorflow 1.x, Python 2.x is required which is not supported by MAVE-NN. 
 Users will need to create separate environments in this case:
 
-    1.  An environment with Tensorflow 1.x and Python 2.x for generating *in silico* MAVE data
-    2.  An environment with Tensorflow 2.x and Python 3.x for training MAVE-NN models
+    1.  Tensorflow 1.x and Python 2.x environment for generating *in silico* MAVE data
+    2.  Tensorflow 2.x and Python 3.x environment for training MAVE-NN models
