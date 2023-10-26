@@ -72,9 +72,15 @@ class InSilicoMAVE():
             print('  Predicting mutagenized sequences...')
         if self.mut_window is not None:
             x_mut_full = self.pad_mave(x_mut, x, self.start_position, self.stop_position)
-            y_mut = self.mut_predictor(x_mut_full)
+            if self.mut_predictor is not None:
+                y_mut = self.mut_predictor(x_mut_full)
+            else:
+                y_mut = None
         else:
-            y_mut = self.mut_predictor(x_mut)
+            if self.mut_predictor is not None:
+                y_mut = self.mut_predictor(x_mut)
+            else:
+                y_mut = None
 
         if self.log2FC is True:
             y_mut = self.apply_log2FC(y_mut)
