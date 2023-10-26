@@ -4,7 +4,7 @@ import tensorflow as tf
 pyDir = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.join(pyDir))
 import losses
-
+import yaml
 
 
 def get_config(run_path):
@@ -30,7 +30,6 @@ def read_model(run_path, compile_model=False):
         trained_model = tf.keras.models.load_model(run_path, custom_objects={"GELU": GELU})
         bin_size = ''
     else:
-        import yaml
         config = get_config(run_path)  # load wandb config
         if 'bin_size' in config.keys():
             bin_size = config['bin_size']['value']  # get bin size
