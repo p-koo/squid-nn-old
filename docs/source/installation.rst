@@ -3,10 +3,9 @@
 Installation Instructions
 =========================
 
-using the ``pip`` package manager by executing the following at the
-commandline: ::
+To install SQUID, use the ``pip`` package manager via the command line: ::
 
-    $ pip install squid
+    $ pip install squid-nn
 
 MAVE-based surrogate models and visualization tools used in our analysis require additional dependencies: ::
 
