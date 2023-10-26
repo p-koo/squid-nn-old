@@ -2,7 +2,7 @@ SQUID: interpreting sequence-based deep learning models for regulatory genomics
 ========================================================================
 [![PyPI version](https://badge.fury.io/py/squid-nn.svg)](https://badge.fury.io/py/squid-nn)
 [![Downloads](https://static.pepy.tech/badge/squid-nn)](https://pepy.tech/project/squid-nn)
-<!--- [![Documentation Status](https://readthedocs.org/projects/mavenn/badge/?version=latest)](https://mavenn.readthedocs.io/en/latest/?badge=latest) --->
+[![Documentation Status](https://readthedocs.org/projects/squid-nn/badge/?version=latest)](https://squid-nn.readthedocs.io/en/latest/?badge=latest)
 
 <br/>
 
