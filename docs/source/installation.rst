@@ -32,7 +32,7 @@ which you use SQUID: ::
 MAVE-NN
 -------
 
-To note, MAVE-based surrogate models and related visualization tools require additional dependencies: ::
+MAVE-NN surrogate models and related visualization tools require additional dependencies: ::
 
     $ pip install logomaker 
     $ pip install mavenn
