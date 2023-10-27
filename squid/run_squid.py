@@ -26,8 +26,8 @@ save = True
 if 1:
     # import ResidualBind-32 model and define hyperparameters
     model_name = 'ResidualBind32'
-    from example_models.ResidualBind32 import re32_utils
-    model, bin_size = re32_utils.read_model(os.path.join(py_dir,'example_models/%s/model' % model_name), compile_model=True)
+    from examples.ResidualBind32 import re32_utils
+    model, bin_size = re32_utils.read_model(os.path.join(py_dir,'examples/%s/model' % model_name), compile_model=True)
     """
         Inputs shape:   (n, 2048, 4)
         Outputs shape:  (1, 64, 15) : 64-bin-resolution profile for each of the 15 cell lines
@@ -47,7 +47,7 @@ if 1:
 
     # retrieve sequence-of-interest from test set
     import h5py
-    with h5py.File(os.path.join(py_dir, 'example_models/%s/cell_line_%s.h5' % (model_name, task_idx)), 'r') as dataset:
+    with h5py.File(os.path.join(py_dir, 'examples/%s/cell_line_%s.h5' % (model_name, task_idx)), 'r') as dataset:
         x_all = np.array(dataset['X']).astype(np.float32)
 
     # define mutagenesis window for sequence
@@ -78,7 +78,7 @@ elif 0:
         keras_model.load_weights(keras_model_weights)
         return keras_model, keras_model_weights, keras_model_json
 
-    model, model_weights, model_json = load_model(os.path.join(py_dir,'example_models/%s/deepstarr.model' % model_name))
+    model, model_weights, model_json = load_model(os.path.join(py_dir,'examples/%s/deepstarr.model' % model_name))
     """
     Inputs shape:   (n, 249, 4)
     Outputs shape:  (2,)
@@ -98,7 +98,7 @@ elif 0:
 
     # retrieve genomic sequences from test set
     import h5py
-    with h5py.File(os.path.join(py_dir, 'example_models/%s/deepstarr_data.h5' % model_name), 'r') as dataset:
+    with h5py.File(os.path.join(py_dir, 'examples/%s/deepstarr_data.h5' % model_name), 'r') as dataset:
         x_all = np.array(dataset['x_test']).astype(np.float32)
 
    # define mutagenesis window for sequence
