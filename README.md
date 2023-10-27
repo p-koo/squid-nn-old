@@ -56,7 +56,7 @@ SQUID provides a simple interface that takes as input a sequence-based deep-lear
 
 
 ### Citation:
-If this code is useful in your work, please our paper.
+If this code is useful in your work, please cite our paper.
 
 ```bibtex
 @article{seitz2023squid,
