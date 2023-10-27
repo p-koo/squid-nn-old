@@ -44,7 +44,7 @@ SQUID provides a simple interface that takes as input a sequence-based deep-lear
 - Examples in Python: 
 
 	- The script `run_squid.py` contains code for running SQUID on several example deep-learning models
-	- The `squid_manuscript` repository contains examples for applying SQUID on several other DNNs such as ENFORMER, and includes additional options for scalability: https://github.com/evanseitz/squid_manuscript
+	- The `squid-manuscript` repository contains examples for applying SQUID on several other DNNs such as ENFORMER, and includes additional options for scalability: https://github.com/evanseitz/squid-manuscript
 
 - Examples in Google Colab:
 
@@ -59,7 +59,7 @@ SQUID provides a simple interface that takes as input a sequence-based deep-lear
 If this code is useful in your work, please cite our paper.
 
 ```bibtex
-@article{seitz2023squid,
+@article{seitz2023_squid,
   title={Identifying *cis*-regulatory mechanisms from genomic deep neural networks using surrogate models},
   author={Seitz, Evan and McCandlish, David and Kinney, Justin and Koo, Peter},
   journal={TBD},
