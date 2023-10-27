@@ -5,5 +5,8 @@ __pycache__/
 
 squid/squid_outputs
 
+dist/*
+*.egg-info/
+
 example_models/ResidualBind32/cell_line_13.h5
 example_models/DeepSTARR/deepstarr_data.h5
