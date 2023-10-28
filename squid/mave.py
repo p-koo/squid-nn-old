@@ -1,9 +1,6 @@
 """
 Functions for performing in silico MAVE
 """
-
-import os, sys
-sys.dont_write_bytecode = True
 import numpy as np
 
 
@@ -21,12 +18,11 @@ class InSilicoMAVE():
     uniform : bool
         uniform (True), Poisson (false); sets the number of mutations per sequence
     """
-    def __init__(self, mut_generator, mut_predictor, seq_length, mut_window=None, log2FC=False):
+    def __init__(self, mut_generator, mut_predictor, seq_length, mut_window=None):
         self.mut_generator = mut_generator
         self.mut_predictor = mut_predictor
         self.seq_length = seq_length
         self.mut_window = mut_window
-        self.log2FC = log2FC
         if mut_window is not None:
             self.start_position = mut_window[0]
             self.stop_position = mut_window[1]
@@ -59,36 +55,19 @@ class InSilicoMAVE():
             print('Building in silico MAVE...')
 
         # generate in silico MAVE based on mutagenesis strategy
-        if verbose:
-            print('  Generating mutagenized sequences...')
         if self.mut_window is not None:
             x_window = self.delimit_range(x, self.start_position, self.stop_position)
             x_mut = self.mut_generator(x_window, num_sim)
+            x_mut_full = self.pad_seq(x_mut, x, self.start_position, self.stop_position)
+            y_mut = self.mut_predictor(x_mut)
         else:
             x_mut = self.mut_generator(x, num_sim)
-
-        # predict MAVE data and process
-        if verbose:
-            print('  Predicting mutagenized sequences...')
-        if self.mut_window is not None:
-            x_mut_full = self.pad_mave(x_mut, x, self.start_position, self.stop_position)
-            if self.mut_predictor is not None:
-                y_mut = self.mut_predictor(x_mut_full)
-            else:
-                y_mut = None
-        else:
-            if self.mut_predictor is not None:
-                y_mut = self.mut_predictor(x_mut)
-            else:
-                y_mut = None
-
-        if self.log2FC is True:
-            y_mut = self.apply_log2FC(y_mut)
+            y_mut = self.mut_predictor(x_mut)
 
         return x_mut, y_mut
 
 
-    def pad_mave(self, x_mut, x, start_position, stop_position):
+    def pad_seq(self, x_mut, x, start_position, stop_position):
         N = x_mut.shape[0]
         x = x[np.newaxis,:]
         x_start = np.tile(x[:,:start_position,:], (N,1,1))
@@ -99,16 +78,3 @@ class InSilicoMAVE():
     def delimit_range(self, x, start_position, stop_position):
         return x[start_position:stop_position,:]
     
-
-    def apply_log2FC(self, y):
-
-        if np.amin(y) < 0:
-            y += (abs(np.amin(y)) + 1)
-        elif 0 <= np.amin(y) < 1:
-            y += 1
-
-        y_log2_wt = np.log2(y[0])
-        y_log2_all = np.log2(y)
-        y_log2_fc = y_log2_wt - y_log2_all
-
-        return y_log2_fc

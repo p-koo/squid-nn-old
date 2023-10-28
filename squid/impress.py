@@ -2,8 +2,7 @@
 Functions for plotting intermediate and final data
 """
 
-import os, sys
-sys.dont_write_bytecode = True
+import os
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
@@ -14,7 +13,7 @@ import logomaker
 from . import utils
 
 
-def plot_y_hist(y_mut, save_dir):
+def plot_y_hist(y_mut, save_dir=None):
 
     # plot histogram of transformed deepnet predictions
     fig, ax = plt.subplots()
@@ -29,9 +28,10 @@ def plot_y_hist(y_mut, save_dir):
         plt.close()
     else:
         plt.show()
+    return fig 
 
 
-def plot_performance(model, info, save_dir):
+def plot_performance(model, info, save_dir=None):
     
     # plot mavenn model performance
     fig, ax = plt.subplots(1, 1, figsize=[5, 5])
@@ -52,6 +52,7 @@ def plot_performance(model, info, save_dir):
         plt.close()
     else:
         plt.show()
+    return fig 
 
 
 def plot_additive_logo(logo, center=True, view_window=None, alphabet=['A','C','G','T'], fig_size=None, save_dir=None):
@@ -74,7 +75,8 @@ def plot_additive_logo(logo, center=True, view_window=None, alphabet=['A','C','G
                     shade_below=.5,
                     width=.9,
                     center_values=center,
-                    font_name='Arial Rounded MT Bold')
+                    #font_name='Arial Rounded MT Bold'  # causes excess warnings on colab
+                    )
     if view_window is not None:
         ax.set_xticks(np.arange(0, view_window[1]-view_window[0], 1))
         ax.set_xticklabels(np.arange(view_window[0], view_window[1], 1))
@@ -88,6 +90,7 @@ def plot_additive_logo(logo, center=True, view_window=None, alphabet=['A','C','G
         plt.close()
     else:
         plt.show()
+    return fig 
 
 
 def plot_pairwise_matrix(theta_lclc, view_window=None, alphabet=['A','C','G','T'], save_dir=None):
@@ -120,6 +123,7 @@ def plot_pairwise_matrix(theta_lclc, view_window=None, alphabet=['A','C','G','T'
         plt.close()
     else:
         plt.show()
+    return fig 
 
 
 def plot_y_vs_yhat(model, mave_df, save_dir=None):
@@ -144,6 +148,7 @@ def plot_y_vs_yhat(model, mave_df, save_dir=None):
         plt.close()
     else:
         plt.show()
+    return fig 
     
     
 def plot_y_vs_phi(model, mave_df, save_dir=None):
@@ -176,10 +181,12 @@ def plot_y_vs_phi(model, mave_df, save_dir=None):
         plt.close()
     else:
         plt.show()
+    return fig 
 
 
 def plot_eig_vals(vals, save_dir=None):
 
+    fig, ax = plt.subplots()
     x = range(1,len(vals)+1)
     plt.scatter(x, vals)
     plt.title('Eigenvalue spectrum')
@@ -195,6 +202,7 @@ def plot_eig_vals(vals, save_dir=None):
         plt.close()
     else:
         plt.show()
+    return fig 
 
 
 def plot_eig_vecs(U, v1, v2, save_dir=None):
@@ -211,3 +219,5 @@ def plot_eig_vecs(U, v1, v2, save_dir=None):
         plt.close()
     else:
         plt.show()
+    return fig 
+

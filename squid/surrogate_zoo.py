@@ -1,13 +1,7 @@
-"""
-Library of surrogate models and related functions
-"""
-
-import os, sys
-sys.dont_write_bytecode = True
+import os
 import numpy as np
 import pandas as pd
 import mavenn
-import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras.regularizers import l1_l2
 
@@ -42,10 +36,11 @@ class SurrogateLinear(SurrogateBase):
 
         # input layer
         inputs = keras.layers.Input(shape=(L,A))
+        flatten - keras.layers.Flatten()(inputs)
         outputs = keras.layers.Dense(num_tasks,
                                      activation='linear',
                                      kernel_regularizer=l1_l2(l1=l1, l2=l2),
-                                     use_bias=True)(inputs)
+                                     use_bias=True)(flatten)
 
         # compile model
         return keras.Model(inputs=inputs, outputs=outputs)
@@ -64,7 +59,7 @@ class SurrogateLinear(SurrogateBase):
         y_test = y[test_index]
 
         # set up optimizer and metrics
-        self.model.compile(tf.keras.optimizers.Adam(learning_rate), loss='mse')
+        self.model.compile(keras.optimizers.Adam(learning_rate), loss='mse')
 
         # early stopping callback
         es_callback = keras.callbacks.EarlyStopping(monitor='val_loss',
@@ -100,7 +95,7 @@ class SurrogateLinear(SurrogateBase):
         for layer in self.model.layers:
             weights = layer.get_weights()
 
-        return self.model.layers[1].get_weights()[0]
+        return self.model.layers[2].get_weights()[0]
     
 
     def get_logo(self, full_length=None, mut_window=None):
@@ -123,7 +118,7 @@ class SurrogateLinear(SurrogateBase):
 class SurrogateMAVENN(SurrogateBase):
     def __init__(self, input_shape, num_tasks, gpmap='additive', regression_type='GE',
                  linearity='nonlinear', noise='SkewedT', noise_order=2, reg_strength=0.1,
-                 alphabet=['A','C','G','T'], deduplicate=True, gpu=False):
+                 alphabet=['A','C','G','T'], deduplicate=True, gpu=True):
         
         self.N, self.L, self.A = input_shape
         self.num_tasks = num_tasks
