@@ -1,6 +1,3 @@
-"""
-Functions for performing in silico MAVE
-"""
 import numpy as np
 
 

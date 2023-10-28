@@ -1,7 +1,3 @@
-"""
-Functions for plotting intermediate and final data
-"""
-
 import os
 import numpy as np
 import matplotlib.pyplot as plt
