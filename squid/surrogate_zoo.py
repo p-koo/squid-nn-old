@@ -8,6 +8,9 @@ from tensorflow.keras.regularizers import l1_l2
 
 
 class SurrogateBase():
+    """
+    Base class for surrogate model.
+    """
     def __init__(self):
         pass
 

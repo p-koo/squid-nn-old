@@ -10,6 +10,19 @@ from . import utils
 
 
 def plot_y_hist(y_mut, save_dir=None):
+    """Function for visualizing histogram of inferred predictions for MAVE dataset.
+
+    Parameters
+    ----------
+    y_mut : numpy.ndarray
+        Inferred predictions for sequences (shape: (N,1)).
+    save_dir : str
+        Directory for saving figures to file.
+
+    Returns
+    -------
+    matplotlib.pyplot.Figure
+    """
 
     # plot histogram of transformed deepnet predictions
     fig, ax = plt.subplots()
@@ -28,6 +41,21 @@ def plot_y_hist(y_mut, save_dir=None):
 
 
 def plot_performance(model, info, save_dir=None):
+    """Function for visualizing MAVE-NN model training performance.
+
+    Parameters
+    ----------
+    model : mavenn.src.model.Model
+        MAVE-NN model object.
+    info : float
+        MAVE-NN estimated variational information (I_pred), in bits.
+    save_dir : str
+        Directory for saving figures to file.
+
+    Returns
+    -------
+    matplotlib.pyplot.Figure
+    """
     
     # plot mavenn model performance
     fig, ax = plt.subplots(1, 1, figsize=[5, 5])
@@ -52,6 +80,32 @@ def plot_performance(model, info, save_dir=None):
 
 
 def plot_additive_logo(logo, center=True, view_window=None, alphabet=['A','C','G','T'], fig_size=None, save_dir=None):
+    """Function for visualizing MAVE-NN additive model parameters.
+
+    Parameters
+    ----------
+    logo : numpy.ndarray
+        Additive model parameters (shape: (L,C)).
+    center : bool
+        If True, the stack of characters at each position will be centered
+        around zero. This is accomplished by subtracting the mean value in
+        each row of the matrix from each element in that row.
+    view_window : [int, int]
+        Index of start and stop position along sequence to probe;
+        i.e., [start, stop], where start < stop and both entries
+        satisfy 0 <= int <= L.
+    alphabet : list
+        The alphabet used to determine the characters in the logo such that
+        each entry is a string; e.g., ['A','C','G','T'] for DNA.
+    fig_size : [float, float]
+        Width, height in inches for matplotlib.pyplot figure.
+    save_dir : str
+        Directory for saving figures to file.
+
+    Returns
+    -------
+    matplotlib.pyplot.Figure
+    """
 
     # plot additive logo
     if fig_size is not None:
@@ -90,6 +144,26 @@ def plot_additive_logo(logo, center=True, view_window=None, alphabet=['A','C','G
 
 
 def plot_pairwise_matrix(theta_lclc, view_window=None, alphabet=['A','C','G','T'], save_dir=None):
+    """Function for visualizing MAVE-NN pairwise model parameters.
+
+    Parameters
+    ----------
+    theta_lclc : numpy.ndarray
+        Pairwise model parameters (shape: (L,C,L,C)).
+    view_window : [int, int]
+        Index of start and stop position along sequence to probe;
+        i.e., [start, stop], where start < stop and both entries
+        satisfy 0 <= int <= L.
+    alphabet : list
+        The alphabet used to determine the characters in the logo such that
+        each entry is a string; e.g., ['A','C','G','T'] for DNA.
+    save_dir : str
+        Directory for saving figures to file.
+
+    Returns
+    -------
+    matplotlib.pyplot.Figure
+    """
 
     # plot maveen pairwise matrix
     fig, ax = plt.subplots(figsize=[10,5])
@@ -123,6 +197,21 @@ def plot_pairwise_matrix(theta_lclc, view_window=None, alphabet=['A','C','G','T'
 
 
 def plot_y_vs_yhat(model, mave_df, save_dir=None):
+    """Function for visualizing comparison of MAVE values and MAVE-NN predictions.
+
+    Parameters
+    ----------
+    model : mavenn.src.model.Model
+        MAVE-NN model object.
+    mave_df : pandas.core.frame.DataFrame
+        Dataframe containing MAVE training splits, y floats, and x strings  (shape : (N,3))
+    save_dir : str
+        Directory for saving figures to file.
+
+    Returns
+    -------
+    matplotlib.pyplot.Figure
+    """
 
     # plot mavenn y versus yhat
     fig, ax = plt.subplots(1,1,figsize=[5,5])
@@ -148,6 +237,21 @@ def plot_y_vs_yhat(model, mave_df, save_dir=None):
     
     
 def plot_y_vs_phi(model, mave_df, save_dir=None):
+    """Function for visualizing comparison of MAVE values and MAVE-NN latent phenotypes.
+
+    Parameters
+    ----------
+    model : mavenn.src.model.Model
+        MAVE-NN model object.
+    mave_df : pandas.core.frame.DataFrame
+        Dataframe containing MAVE training splits, y floats, and x strings  (shape : (N,3))
+    save_dir : str
+        Directory for saving figures to file.
+
+    Returns
+    -------
+    matplotlib.pyplot.Figure
+    """
 
     # plot mavenn y versus phi
     fig, ax = plt.subplots(1,1,figsize=[5,5])
@@ -181,6 +285,19 @@ def plot_y_vs_phi(model, mave_df, save_dir=None):
 
 
 def plot_eig_vals(vals, save_dir=None):
+    """Function for visualizing eigenvalue spectrum, if using PCA.
+
+    Parameters
+    ----------
+    vals : numpy.ndarray
+        Eigenvalues obtained from PCA.
+    save_dir : str
+        Directory for saving figures to file.
+
+    Returns
+    -------
+    matplotlib.pyplot.Figure
+    """
 
     fig, ax = plt.subplots()
     x = range(1,len(vals)+1)
@@ -202,6 +319,23 @@ def plot_eig_vals(vals, save_dir=None):
 
 
 def plot_eig_vecs(U, v1, v2, save_dir=None):
+    """Function for visualizing subspace defined by two eigenvectors, if using PCA.
+
+    Parameters
+    ----------
+    U : numpy.ndarray
+        Eigenvectors obtained from PCA.
+    v1 : int
+        Index of first eigenvector.
+    v2: int
+        Index of second eigenvector.
+    save_dir : str
+        Directory for saving figures to file.
+
+    Returns
+    -------
+    matplotlib.pyplot.Figure
+    """
 
     fig, ax = plt.subplots()
     ax.scatter(U[:,v1], U[:,v2], s=1, facecolor='k', alpha=.5)
@@ -215,5 +349,4 @@ def plot_eig_vecs(U, v1, v2, save_dir=None):
         plt.close()
     else:
         plt.show()
-    return fig 
-
+    return fig

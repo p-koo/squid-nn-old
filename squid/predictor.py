@@ -2,6 +2,9 @@ import numpy as np
 
 
 class BasePredictor():
+    """
+    Base class for running inference on in silico mutated sequences.
+    """
 
     def __init__(self, pred_fun, reduce_fun, task_idx, batch_size):
         self.pred_fun = pred_fun
@@ -27,6 +30,22 @@ class BasePredictor():
 
 
 class ScalarPredictor(BasePredictor):
+    """Module for handling scalar-based model predictions.
+
+    Parameters
+    ----------
+    pred_fun : built-in function
+        Function for returning model predictions from inputs.
+    task_idx : int
+        Task index corresponding to a specific output head.
+    batch_size : int
+        The number of predictions per batch during model inference.
+
+    Returns
+    -------
+    torch.Tensor
+        Batch of scalar predictions corresponding to inputs.
+    """
 
     def __init__(self, pred_fun, task_idx=0, batch_size=64, **kwargs):
         self.pred_fun = pred_fun
@@ -42,6 +61,24 @@ class ScalarPredictor(BasePredictor):
 
 
 class ProfilePredictor(BasePredictor):
+    """Module for handling profile-based model predictions.
+
+    Parameters
+    ----------
+    pred_fun : function
+        Built-in function for accessing model inference on inputs.
+    task_idx : int
+        Task index corresponding to a specific output head.
+    batch_size : int
+        The number of predictions per batch during model inference.
+    reduce_fun : function
+        User-defined function for reducing profile prediction to scalar.
+
+    Returns
+    -------
+    torch.Tensor
+        Batch of scalar predictions corresponding to inputs.
+    """
 
     def __init__(self, pred_fun, task_idx=0, batch_size=64, reduce_fun=np.sum, save_dir=None, **kwargs):
         self.pred_fun = pred_fun
@@ -62,6 +99,7 @@ class ProfilePredictor(BasePredictor):
 
 
 
+'''
 class BPNetPredictor(BasePredictor):
 
     def __init__(self, pred_fun, task_idx=0, batch_size=64, reduce_fun=np.sum, axis=1, strand='pos', **kwargs):
@@ -85,6 +123,7 @@ class BPNetPredictor(BasePredictor):
         pred = pred[self.task_idx][0][:,self.strand]
         pred = self.reduce_fun(pred, axis=self.axis)
         return pred[:,np.newaxis]
+'''
 
 
 
@@ -109,6 +148,22 @@ class CustomPredictor():
 
 
 def predict_in_batches(x, model_pred_fun, batch_size=None, **kwargs):
+    """Function to compute model predictions in batch mode.
+
+    Parameters
+    ----------
+    x : torch.Tensor
+        Batch of one-hot sequences (shape: (L, A)).
+    model_pred_fun : function
+        Built-in function for accessing model inference on inputs.
+    batch_size : int
+        The number of predictions per batch of model inference.
+
+    Returns
+    -------
+    numpy.ndarray
+        Batch of predictions corresponding to inputs in 'x'.
+    """
 
     N, L, A = x.shape
     num_batches = np.floor(N/batch_size).astype(int)
@@ -127,12 +182,37 @@ def predict_in_batches(x, model_pred_fun, batch_size=None, **kwargs):
 
 
 def profile_sum(pred, save_dir=None):
+    """Function to transform predictions to scalars using summation.
+
+    Parameters
+    ----------
+    pred : np.ndarray
+        Batch of profile-based predictions.
+
+    Returns
+    -------
+    numpy.ndarray
+        Batch of scalar predictions.
+    """
 
     sum = np.sum(pred, axis=1)
     return sum
 
 
 def profile_pca(pred, save_dir=None):
+    """Function to transform predictions to scalars using principal component analysis (PCA).
+
+    Parameters
+    ----------
+    pred : np.ndarray
+        Batch of profile-based predictions.
+
+    Returns
+    -------
+    numpy.ndarray
+        Batch of scalar predictions formed from projection of embedded
+        profiles onto the first principal component.
+    """
 
     N, B = pred.shape #B : number of bins in profile
     Y = pred.copy()

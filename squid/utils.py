@@ -4,7 +4,7 @@ import numpy as np
 
 
 def arr2pd(x, letters=['A','C','G','T']):
-    """Convert Numpy array to Pandas dataframe with proper column headings.
+    """Function to convert a Numpy array to Pandas dataframe with proper column headings.
 
     Parameters
     ----------
@@ -31,7 +31,7 @@ def arr2pd(x, letters=['A','C','G','T']):
 
 def oh2seq(one_hot, alphabet):
     """
-    Convert one-hot encoding to sequence
+    Function to convert one-hot encoding to a sequence.
     ----------
     OH : ARRAY with shape (L, 4)
         Input sequence (one-hot encoding)
@@ -55,7 +55,7 @@ def oh2seq(one_hot, alphabet):
 
 def seq2oh(seq, alphabet):
     """
-    Convert sequence to one-hot encoding
+    Funciton to convert a sequence to one-hot encoding.
     ----------
     seq : STRING with length L
         Input sequence
@@ -79,7 +79,7 @@ def seq2oh(seq, alphabet):
 
 def fix_gauge(x, gauge, wt=None, r=None):
     """    
-    Fix the gauge for an attribution matrix
+    Function to fix the gauge for an attribution matrix.
     
     x :         ARRAY with shape (L, 4)
                 Matrix of attribution scores for a sequence-of-interest

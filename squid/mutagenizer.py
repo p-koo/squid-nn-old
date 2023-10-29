@@ -14,8 +14,6 @@ class BaseMutagenesis:
             Batch of one-hot sequences (shape: (L, A)).
         num_sim : int
             Number of sequences to mutagenize.
-        seed : int
-            sets the random number seed
 
         Returns
         -------
@@ -26,6 +24,20 @@ class BaseMutagenesis:
 
 
 class RandomMutagenesis(BaseMutagenesis):
+    """Module for performing random mutagenesis.
+
+    Parameters
+    ----------
+    mut_rate : float, optional
+        Mutation rate for random mutagenesis (defaults to 0.1).
+    uniform : bool
+        uniform (True), Poisson (False); sets the number of mutations per sequence.
+
+    Returns
+    -------
+    torch.Tensor
+        Batch of one-hot sequences with random mutagenesis applied.
+    """
 
     def __init__(self, mut_rate, uniform=False):
         self.mut_rate = mut_rate
@@ -68,6 +80,23 @@ class CustomMutagenesis(BaseMutagenesis):
 
 
 def apply_mut_by_seq_index(x_index, shape, num_muts):
+    """Function to perform random mutagenesis.
+
+    Parameters
+    ----------
+    x_index : np.ndarray
+        Indices of wildtype sequence.
+    shape : list
+        Shape of MAVE array; i.e., (num_sim,L,A).
+    num_muts : int
+        Number of mutations per sequence.
+
+    Returns
+    -------
+    torch.Tensor
+        Batch of one-hot sequences with random mutagenesis applied.
+    """
+
     num_sim, L, A = shape
     one_hot = np.zeros((num_sim, L, A))
 
@@ -94,4 +123,3 @@ def apply_mut_by_seq_index(x_index, shape, num_muts):
             # create one-hot from index
             one_hot[i,:,:] = np.eye(A)[seq_index]
     return one_hot
-

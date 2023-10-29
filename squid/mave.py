@@ -13,7 +13,7 @@ class InSilicoMAVE():
     stop_position : int, optional
         Index of stop position along sequence to probe (defaults to None).
     uniform : bool
-        uniform (True), Poisson (false); sets the number of mutations per sequence
+        uniform (True), Poisson (false); sets the number of mutations per sequence.
     """
     def __init__(self, mut_generator, mut_predictor, seq_length, mut_window=None):
         self.mut_generator = mut_generator
@@ -38,13 +38,15 @@ class InSilicoMAVE():
         num_sim : int
             Number of sequences to mutagenize for in silico MAVE.
         seed : int, optional
-            sets the random number seed
+            Sets the random number seed.
 
         Returns
         -------
-        torch.Tensor
-            Sequences with randomly mutated segments (padded to correct shape
-            with random DNA)
+        x_mut : numpy.ndarray
+            Sequences with randomly mutated segments, padded to correct shape
+            with random DNA (shape: (N,L,C)).
+        y_mut : numpy.ndarray
+            Inferred predictions for sequences (shape: (N,1)).
         """
         np.random.seed(seed)
         if verbose:
@@ -65,6 +67,26 @@ class InSilicoMAVE():
 
 
     def pad_seq(self, x_mut, x, start_position, stop_position):
+        """Function to pad mutated sequences on both sides with the surrounding unmutated region.
+        
+        Parameters
+        ----------
+        x_mut : numpy.ndarray
+            Sequences with randomly mutated segments with length l < L
+            defined by l = stop_position - start_position (shape: (N,l,C)).
+        x : torch.Tensor
+            Batch of one-hot sequences (shape: (L,A)).
+        start_position : int
+            Index of start position along sequence to probe.
+        stop_position : int
+            Index of stop position along sequence to probe.
+
+        Returns
+        -------
+        numpy.ndarray
+            Sequences with randomly mutated segments, padded to correct shape
+            with random DNA (shape: (N,L,C)).
+        """
         N = x_mut.shape[0]
         x = x[np.newaxis,:]
         x_start = np.tile(x[:,:start_position,:], (N,1,1))
@@ -73,5 +95,22 @@ class InSilicoMAVE():
 
 
     def delimit_range(self, x, start_position, stop_position):
+        """Function to delimit sequence to a specific region.
+        
+        Parameters
+        ----------
+        x : torch.Tensor
+            Batch of one-hot sequences (shape: (L,A)).
+        start_position : int
+            Index of start position along sequence to probe.
+        stop_position : int
+            Index of stop position along sequence to probe.
+
+        Returns
+        -------
+        numpy.ndarray
+            Delimited sequences with length l < L defined by
+            l = stop_position - start_position (shape: (N,l,C)).
+        """
         return x[start_position:stop_position,:]
     
