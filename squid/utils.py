@@ -2,26 +2,26 @@ import pandas as pd
 import numpy as np
 
 
-
-def arr2pd(x, letters=['A','C','G','T']):
+def arr2pd(x, alphabet=['A','C','G','T']):
     """Function to convert a Numpy array to Pandas dataframe with proper column headings.
 
     Parameters
     ----------
-    x : ARRAY with shape (L, 4)
-        input sequence (one-hot encoding or attribution map).
-    letters : 1D ARRAY
-        All characters present in the sequence alphabet (e.g., ['A','C','G','T'] for DNA)
+    x : numpy.ndarray
+        One-hot encoding or attribution map (shape : (L,C)).
+    alphabet : list
+        The alphabet used to determine the C characters in the logo such that
+        each entry is a string; e.g., ['A','C','G','T'] for DNA.
 
     Returns
     -------
-    x : DATAFRAME
-        Pandas dataframe corresponding to the input Numpy array
+    x : pandas.dataframe
+        Dataframe corresponding to the input array.
     """
     
     labels = {}
     idx = 0
-    for i in letters:
+    for i in alphabet:
         labels[i] = x[:,idx]
         idx += 1
     x = pd.DataFrame.from_dict(labels, orient='index').T
@@ -29,19 +29,22 @@ def arr2pd(x, letters=['A','C','G','T']):
     return x
 
 
-def oh2seq(one_hot, alphabet):
+def oh2seq(one_hot, alphabet=['A','C','G','T']):
     """
     Function to convert one-hot encoding to a sequence.
+
+    Parameters
     ----------
-    OH : ARRAY with shape (L, 4)
-        Input sequence (one-hot encoding)
-    alphabet : 1D ARRAY
-        All characters present in the sequence alphabet (e.g., ['A','C','G','T'] for DNA)
-    
+    one_hot : numpy.ndarray
+        Input one-hot encoding of sequence (shape : (L,C))
+    alphabet : list
+        The alphabet used to determine the C characters in the logo such that
+        each entry is a string; e.g., ['A','C','G','T'] for DNA.
+
     Returns
     -------
-    seq : STRING with length L
-        Sequence corresponding to input one-hot encoding (e.g., 'AATGAC...')
+    seq : string
+        Input sequence with length L.
     """
     
     seq = []
@@ -53,19 +56,22 @@ def oh2seq(one_hot, alphabet):
     return seq
 
 
-def seq2oh(seq, alphabet):
+def seq2oh(seq, alphabet=['A','C','G','T']):
     """
-    Funciton to convert a sequence to one-hot encoding.
+    Function to convert a sequence to one-hot encoding.
+
+    Parameters
     ----------
-    seq : STRING with length L
-        Input sequence
-    alphabet : 1D ARRAY
-        All characters present in the sequence alphabet (e.g., ['A','C','G','T'] for DNA)
-    
+    seq : string
+        Input sequence with length L
+    alphabet : list
+        The alphabet used to determine the C characters in the logo such that
+        each entry is a string; e.g., ['A','C','G','T'] for DNA.
+
     Returns
     -------
-    OH : ARRAY with shape (L, 4)
-        One-hot encoding corresponding to input sequence
+    one_hot : numpy.ndarray
+        One-hot encoding corresponding to input sequence (shape : (L,C)).
     """
     
     L = len(seq)
@@ -78,21 +84,30 @@ def seq2oh(seq, alphabet):
 
 
 def fix_gauge(x, gauge, wt=None, r=None):
-    """    
-    Function to fix the gauge for an attribution matrix.
-    
-    x :         ARRAY with shape (L, 4)
-                Matrix of attribution scores for a sequence-of-interest
-    gauge :     STRING {'empirical', 'wildtype', 'hierarchical', 'default'}
-                Specification of which gauge to use
-    OH_wt :     ARRAY with shape (L, 4)
-                Wild-type sequence (one-hot encoding); needed if gauge = 'wildtype'
-    r :         Probability of mutation used during generation of in silico MAVE dataset
+    """Function to fix the gauge for an attribution matrix.
+
+    Parameters
+    ----------
+    x : numpy.ndarray
+        Matrix of attribution scores for a sequence-of-interest (shape : (L,C)).
+    gauge : gauge mode used to fix model parameters.
+            See https://mavenn.readthedocs.io/en/latest/math.html for more info.
+        'uniform'   :   hierarchical gauge using a uniform sequence distribution over
+                        the characters at each position observed in the training set
+                        (unobserved characters are assigned probability 0).
+        'empirical' :   uses an empirical distribution computed from the training data.
+        'consensus' :   wild-type gauge using the training data consensus sequence.
+        'default'   :   default gauge (no change).
+    OH_wt : numpy.ndarray
+        Wild-type sequence (one-hot encoding) for 'wildtype' or 'empirical' gauge (shape : (L,C)).
+    r : float
+        For 'empirical gauge', the probability of mutation used during generation of
+        in silico MAVE dataset (see 'mut_rate').
 
     Returns
     -------
-    OH : ARRAY with shape (L, 4)
-        Gauge-fixed one-hot encoding corresponding to input sequence
+    OH : numpy.ndarray
+        Gauge-fixed one-hot encoding corresponding to input sequence (shape : (L,C)).
     """
 
     x1 = x.copy()

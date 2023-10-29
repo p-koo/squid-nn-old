@@ -26,6 +26,22 @@ class SurrogateBase():
 
 
 class SurrogateLinear(SurrogateBase):
+    """Module for linear surrogate model (no GE or noise models).
+
+    Parameters
+    ----------
+    l1 : float, optional
+        Keras regularizer that applies a L1 regularization penalty,
+        with penalty computed as: loss = l1 * reduce_sum(abs(x)).
+    l2 : float, optional
+        Keras regularizer that applies a L2 regularization penalty,
+        with penalty is computed as: loss = l2 * reduce_sum(square(x)).
+
+    Returns
+    -------
+    keras.Model
+        Linear model parameters.
+    """
     def __init__(self, input_shape, num_tasks, l1=1e-8, l2=1e-4,
                  alphabet=['A','C','G','T'], gpu=False):
 
@@ -39,7 +55,7 @@ class SurrogateLinear(SurrogateBase):
 
         # input layer
         inputs = keras.layers.Input(shape=(L,A))
-        flatten - keras.layers.Flatten()(inputs)
+        flatten = keras.layers.Flatten()(inputs)
         outputs = keras.layers.Dense(num_tasks,
                                      activation='linear',
                                      kernel_regularizer=l1_l2(l1=l1, l2=l2),
@@ -119,6 +135,46 @@ class SurrogateLinear(SurrogateBase):
 
 
 class SurrogateMAVENN(SurrogateBase):
+    """Module for MAVE-NN surrogate models (optional GE and noise models).
+
+    Parameters
+    ----------
+    gpmap : string {'additive' or 'pairwise'}
+        Define MAVE-NN surrogate model used to interpret deep learning model.
+            'additive'  :   Assume that each position contributes independently to the latent phenotype.
+            'pairwise'  :   Assume that every pair of positions contribute to the latent phenotype.
+    regression_type : string
+        Type of regression used for measurement process.
+            'MPA'   :   measurement process agnostic (categorical y-values).
+            'GE'    :   global epistasis (continuous y-values).
+    linearity : string
+        Define use of additional nonlinearity for fitting data.
+            'nonlinear' :   Additionally fit data using GE nonlinear function.
+            'linear'    :   Do not apply GE nonlinearity for fitting data.
+    noise : string
+        Noise model to use for when defining a GE model (no effect on MPA models).
+        See https://mavenn.readthedocs.io/en/latest/math.html for more info.
+            'Gaussian'  :   Gaussian-based noise model.
+            'Cauchy'    :   Cauchy-based noise model.
+            'SkewedT'   :   SkewedT-based noise model.
+    noise_order : int
+        In the GE context, the order of the polynomial(s) used to define noise model parameters.
+        In the linear context, the order is zero by default.
+    reg_strength : float
+        L2 regularization strength for G-P map parameters.
+    alphabet : list
+        The alphabet used to determine the C characters in the logo such that
+        each entry is a string; e.g., ['A','C','G','T'] for DNA.
+    deduplicate : boole
+        Remove duplicate sequence-function pairs in dataset (True).
+    gpu : boole
+        Enable GPUs (True).
+
+    Returns
+    -------
+    keras.Model
+        MAVE-NN model parameters.
+    """
     def __init__(self, input_shape, num_tasks, gpmap='additive', regression_type='GE',
                  linearity='nonlinear', noise='SkewedT', noise_order=2, reg_strength=0.1,
                  alphabet=['A','C','G','T'], deduplicate=True, gpu=True):
@@ -266,8 +322,21 @@ class SurrogateMAVENN(SurrogateBase):
         return (self.model, mave_df)
 
 
-
     def get_info(self, save_dir=None, verbose=1):
+        """Function to return estimated variational information from MAVE-NN model.
+
+        Parameters
+        ----------
+        model : mavenn.src.model.Model
+            MAVE-NN model object.
+        save_dir : str
+            Directory for saving figures to file.
+
+        Returns
+        -------
+        I_pred : float
+            MAVE-NN estimated variational information (I_pred), in bits.
+        """
 
         # compute predictive information on test data
         if self.regression_type == 'MPA':
@@ -298,6 +367,31 @@ class SurrogateMAVENN(SurrogateBase):
 
 
     def get_params(self, gauge='empirical', save_dir=None):
+        """Function to return trained parameters from MAVE-NN model.
+
+        Parameters
+        ----------
+        model : mavenn.src.model.Model
+            MAVE-NN model object.
+        gauge : gauge mode used to fix model parameters.
+                See https://mavenn.readthedocs.io/en/latest/math.html for more info.
+            'uniform'   :   hierarchical gauge using a uniform sequence distribution over
+                            the characters at each position observed in the training set
+                            (unobserved characters are assigned probability 0).
+            'empirical' :   uses an empirical distribution computed from the training data.
+            'consensus' :   wild-type gauge using the training data consensus sequence.
+        save_dir : str
+            Directory for saving figures to file.
+        
+        Returns
+        -------
+        theta_0     :   float
+            Constant term in trained parameters.
+        theta_lc    :   numpy.ndarray
+            Additive terms in trained parameters (shape : (L,C)).
+        theta_lclc  :   numpy.ndarray
+            Pairwise terms in trained parameters (shape : (L,C,L,C)), if gpmap is 'pairwise'.
+        """
 
         # fix gauge mode for model representation
         self.theta_dict = self.model.get_theta(gauge=gauge) #for usage: theta_dict.keys()
@@ -321,6 +415,24 @@ class SurrogateMAVENN(SurrogateBase):
 
 
     def get_logo(self, full_length=None, mut_window=None):
+        """Function to place trained additive parameters into surrounding nonmutated sequence (zeros).
+
+        Parameters
+        ----------
+        model : mavenn.src.model.Model
+            MAVE-NN model object.
+        full_length : int
+            Full length of sequence.
+        mut_window : [int, int]
+            Index of start and stop position along sequence to probe;
+            i.e., [start, stop], where start < stop and both entries
+            satisfy 0 <= int <= L.
+
+        Returns
+        -------
+        additive_logo : numpy.ndarray
+            Additive logo parameters (shape : ('full_length',C)).
+        """
 
         # insert the (potentially-delimited) additive logo back into the max-length sequence
         if full_length is None:

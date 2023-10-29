@@ -95,7 +95,7 @@ def plot_additive_logo(logo, center=True, view_window=None, alphabet=['A','C','G
         i.e., [start, stop], where start < stop and both entries
         satisfy 0 <= int <= L.
     alphabet : list
-        The alphabet used to determine the characters in the logo such that
+        The alphabet used to determine the C characters in the logo such that
         each entry is a string; e.g., ['A','C','G','T'] for DNA.
     fig_size : [float, float]
         Width, height in inches for matplotlib.pyplot figure.
@@ -155,7 +155,7 @@ def plot_pairwise_matrix(theta_lclc, view_window=None, alphabet=['A','C','G','T'
         i.e., [start, stop], where start < stop and both entries
         satisfy 0 <= int <= L.
     alphabet : list
-        The alphabet used to determine the characters in the logo such that
+        The alphabet used to determine the C characters in the logo such that
         each entry is a string; e.g., ['A','C','G','T'] for DNA.
     save_dir : str
         Directory for saving figures to file.
