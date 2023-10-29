@@ -17,44 +17,49 @@ SQUID: interpreting sequence-based deep learning models for regulatory genomics
 <!--- <em>Genome Biol</em> **23**, 98 (2022). https://doi.org/10.1186/s13059-022-02661-7 --->
 ---
 
-### Install:
+## Install:
 
 ```bash
 pip install squid-nn
 ```
 
-### Dependencies:
+## Dependencies:
 
 ```bash
 pip install logomaker
 pip install mavenn --upgrade
 ```
 
-Note: For older DNNs that require inference via Tensorflow 1.x, Python 2.x is required which is not supported by MAVE-NN. Users will need to create separate environments in this case:
+### Notes
+
+For issues installing MAVE-NN, please see:
+- https://mavenn.readthedocs.io/en/latest/installation.html
+- https://github.com/jbkinney/mavenn/issues
+
+For older DNNs that require inference via Tensorflow 1.x, Python 2.x is required which is not supported by MAVE-NN. Users will need to create separate environments in this case:
 1. Tensorflow 1.x and Python 2.x environment for generating *in silico* MAVE data
 2. Tensorflow 2.x and Python 3.x environment for training MAVE-NN surrogate models
 
 
-### Usage:
-SQUID provides a simple interface that takes as input a sequence-based deep-learning model (e.g., a DNN), which is used as an oracle to generate an *in silico* MAVE dataset representing a localized region of sequence space. The MAVE dataset can then be fit using a domain-specific surrogate model, with the resulting parameters visualized to reveal the cis-regulatory mechanisms driving model performance.
+## Usage:
+SQUID provides a simple interface that takes as input a sequence-based deep-learning model (e.g., a DNN), which is used as an oracle to generate an *in silico* MAVE dataset representing a localized region of sequence space. The MAVE dataset can then be fit using a domain-specific surrogate model, with the resulting parameters visualized to reveal the *cis*-regulatory mechanisms driving model performance.
 
 <img src="images/framework.png" alt="fig" width="1000"/>
 
-- Examples in Python: 
-
-	- The script `run_squid.py` contains code for running SQUID on several example deep-learning models
-	- The `squid-manuscript` repository contains examples to reproduce results in the manuscript, including the application of SQUID on other DNNs such as ENFORMER: https://github.com/evanseitz/squid-manuscript
-
-- Examples in Google Colab:
+- **Examples in Google Colab**:
 
 	- Additive analysis with DeepSTARR: https://colab.research.google.com/drive/12HR8Vu_8ji3Ac1wli4wgqx1J0YB73JF_?usp=sharing
 
 	- Pairwise analysis with ResidualBind-32: https://colab.research.google.com/drive/1eKC78YE2l49mQFOlnA9Xr1Y9IO121Va5?usp=sharing
 	
 	- Variant effect analysis with Kipoi model: https://colab.research.google.com/drive/1wtpT1FF5nu1etTDOaV3A7ByXhuLqK071?usp=sharing
+	
+- **Examples in Python**: 
+
+	- The `squid-manuscript` repository contains examples to reproduce results in the manuscript, including the application of SQUID on other DNNs such as ENFORMER: https://github.com/evanseitz/squid-manuscript
 
 
-### Citation:
+## Citation:
 If this code is useful in your work, please cite our paper.
 
 ```bibtex
@@ -70,7 +75,7 @@ If this code is useful in your work, please cite our paper.
 }
 ```
 
-### License:
+## License:
 Copyright (C) 2022–2023 Evan Seitz, David McCandlish, Justin Kinney, Peter Koo
 
 The software, code sample and their documentation made available on this website could include technical or other mistakes, inaccuracies or typographical errors. We may make changes to the software or documentation made available on its web site at any time without prior notice. We assume no responsibility for errors or omissions in the software or documentation available from its web site. For further details, please see the LICENSE file.
