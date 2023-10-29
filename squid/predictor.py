@@ -1,11 +1,4 @@
-"""
-Library of functions for DNN inference on mutagenized sequences
-"""
-
-import os, sys
-sys.dont_write_bytecode = True
 import numpy as np
-#import impress
 
 
 class BasePredictor():
@@ -42,7 +35,7 @@ class ScalarPredictor(BasePredictor):
         self.batch_size = batch_size
 
     def __call__(self, x):
-        pred = prediction_in_batches(x, self.pred_fun, self.batch_size, **self.kwargs)
+        pred = predict_in_batches(x, self.pred_fun, self.batch_size, **self.kwargs)
         #return pred[:,self.task_idx][:,np.newaxis]
         return pred[self.task_idx]
 
@@ -61,7 +54,7 @@ class ProfilePredictor(BasePredictor):
 
     def __call__(self, x):
         # get model predictions (all tasks)
-        pred = prediction_in_batches(x, self.pred_fun, self.batch_size, **self.kwargs)
+        pred = predict_in_batches(x, self.pred_fun, self.batch_size, **self.kwargs)
 
         # reduce profile to scalar across axis for a given task_idx
         pred = self.reduce_fun(pred[:,:,self.task_idx], save_dir=self.save_dir)
@@ -86,7 +79,7 @@ class BPNetPredictor(BasePredictor):
     def __call__(self, x):
 
         # get model predictions (all tasks)
-        pred = prediction_in_batches(x, self.pred_fun, self.batch_size, **self.kwargs)
+        pred = predict_in_batches(x, self.pred_fun, self.batch_size, **self.kwargs)
 
         # reduce bpnet profile prediction to scalar across axis for a given task_idx
         pred = pred[self.task_idx][0][:,self.strand]
@@ -95,13 +88,27 @@ class BPNetPredictor(BasePredictor):
 
 
 
+'''
+class CustomPredictor():
+
+    def __init__(self, pred_fun, reduce_fun, task_idx, batch_size):
+        self.pred_fun = pred_fun
+        self.reduce_fun = reduce_fun
+        self.task_idx = task_idx
+        self.batch_size = batch_size
+
+    def __call__(self, x):
+        # code goes here: process predictions into scalar
+        return predictions
+
+'''
 
 ################################################################################
 # useful functions
 ################################################################################
 
 
-def prediction_in_batches(x, model_pred_fun, batch_size=None, **kwargs):
+def predict_in_batches(x, model_pred_fun, batch_size=None, **kwargs):
 
     N, L, A = x.shape
     num_batches = np.floor(N/batch_size).astype(int)
@@ -158,3 +165,5 @@ def custom_reduce(pred):
     # code to reduce predictions to (N,1)
     return pred_reduce
 """
+
+

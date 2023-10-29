@@ -13,7 +13,7 @@ SQUID: interpreting sequence-based deep learning models for regulatory genomics
 
 **SQUID** (**S**urrogate **Qu**antitative **I**nterpretability for **D**eepnets) is a Python suite to interpret sequence-based deep learning models for regulatory genomics data with domain-specific surrogate models. For installation instructions, tutorials, and documentation, please refer to the SQUID website, https://squid-nn.readthedocs.io/. For an extended discussion of this approach and its applications, please refer to our manuscript:
 
-* Seitz E., McCandlish D., Kinney J. and Koo P. Identifying *cis*-regulatory mechanisms from genomic deep neural networks using surrogate models.
+* Seitz E., McCandlish D., Kinney J., and Koo P.K. Identifying *cis*-regulatory mechanisms from genomic deep neural networks with surrogate models.
 <!--- <em>Genome Biol</em> **23**, 98 (2022). https://doi.org/10.1186/s13059-022-02661-7 --->
 ---
 
@@ -27,7 +27,6 @@ pip install squid-nn
 
 ```bash
 pip install logomaker
-pip install mavenn
 pip install mavenn --upgrade
 ```
 
@@ -37,14 +36,14 @@ Note: For older DNNs that require inference via Tensorflow 1.x, Python 2.x is re
 
 
 ### Usage:
-SQUID provides a simple interface that takes as input a sequence-based deep-learning model (e.g., a DNN), which is used as an oracle to generate an *in silico* MAVE dataset representing a localized region of sequence space. The MAVE dataset can then be fit using a domain-specific surrogate model, with the resulting parameters visualized to reveal the biological mechanisms driving model performance.
+SQUID provides a simple interface that takes as input a sequence-based deep-learning model (e.g., a DNN), which is used as an oracle to generate an *in silico* MAVE dataset representing a localized region of sequence space. The MAVE dataset can then be fit using a domain-specific surrogate model, with the resulting parameters visualized to reveal the cis-regulatory mechanisms driving model performance.
 
 <img src="images/framework.png" alt="fig" width="1000"/>
 
 - Examples in Python: 
 
 	- The script `run_squid.py` contains code for running SQUID on several example deep-learning models
-	- The `squid-manuscript` repository contains examples for applying SQUID on several other DNNs such as ENFORMER, and includes additional options for scalability: https://github.com/evanseitz/squid-manuscript
+	- The `squid-manuscript` repository contains examples to reproduce results in the manuscript, including the application of SQUID on other DNNs such as ENFORMER: https://github.com/evanseitz/squid-manuscript
 
 - Examples in Google Colab:
 

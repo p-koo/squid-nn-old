@@ -1,5 +1,3 @@
-import os, sys
-sys.dont_write_bytecode = True
 import pandas as pd
 import numpy as np
 
@@ -31,7 +29,7 @@ def arr2pd(x, letters=['A','C','G','T']):
     return x
 
 
-def oh2seq(OH, alphabet):
+def oh2seq(one_hot, alphabet):
     """
     Convert one-hot encoding to sequence
     ----------
@@ -47,9 +45,9 @@ def oh2seq(OH, alphabet):
     """
     
     seq = []
-    for i in range(np.shape(OH)[0]):
+    for i in range(np.shape(one_hot)[0]):
         for j in range(len(alphabet)):
-            if OH[i][j] == 1:
+            if one_hot[i][j] == 1:
                 seq.append(alphabet[j])
     seq = ''.join(seq)
     return seq
@@ -71,12 +69,12 @@ def seq2oh(seq, alphabet):
     """
     
     L = len(seq)
-    OH = np.zeros(shape=(L,len(alphabet)), dtype=np.float32)
+    one_hot = np.zeros(shape=(L,len(alphabet)), dtype=np.float32)
     for idx, i in enumerate(seq):
         for jdx, j in enumerate(alphabet):
             if i == j:
-                OH[idx,jdx] = 1
-    return OH
+                one_hot[idx,jdx] = 1
+    return one_hot
 
 
 def fix_gauge(x, gauge, wt=None, r=None):
@@ -130,3 +128,6 @@ def fix_gauge(x, gauge, wt=None, r=None):
         pass
 
     return x1
+
+
+    
